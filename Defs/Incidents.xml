@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <IncidentDef>
+    <defName>CrE_PiratePawn_Extort</defName>
+    <label>CrE Pirate Pawn Extort</label>
+    <category>Misc</category>
+    <targetTags>
+      <li>World</li>
+    </targetTags>
+    <workerClass>CrocamedelianExaction.IncidentWorker_CrEPiratePawnExtort</workerClass>
+    <letterLabel>Pirate Demand</letterLabel>
+    <letterDef>CrE_PiratePawn_Extort_Letter</letterDef>
+    <baseChance>0.5</baseChance>
+    <earliestDay>15</earliestDay>
+    <minRefireDays>30</minRefireDays>
+  </IncidentDef>
+
+  <IncidentDef>
+    <defName>CrE_PiratePawn_Return</defName>
+    <label>CrE Pirate Pawn Return</label>
+    <category>Misc</category>
+    <targetTags>
+      <li>Map_PlayerHome</li>
+    </targetTags>
+    <workerClass>CrocamedelianExaction.CrE_PiratePawn_Return</workerClass>
+    <letterLabel>{PAWN_nameDef} Returns</letterLabel>
+    <letterText>{PAWN_nameDef} has returned from do labour for the pirates.</letterText>
+	<letterDef>PositiveEvent</letterDef>
+  </IncidentDef>
+
+  <IncidentDef>
+    <defName>CrE_PiratePawn_NoReturn</defName>
+    <label>CrE Pirate Pawn No Return</label>
+    <category>Misc</category>
+    <targetTags>
+      <li>Map_PlayerHome</li>
+    </targetTags>
+    <workerClass>CrocamedelianExaction.CrE_PiratePawn_Return</workerClass>
+    <letterLabel>{PAWN_nameDef} Missing</letterLabel>
+    <letterText>The pirates have decided that they much prefer to keep {PAWN_nameDef} as a permananet slave in their colony. This is a major loss for us has many will miss them.</letterText>
+	<letterDef>NegativeEvent</letterDef>
+  </IncidentDef>
+
+  <IncidentDef>
+    <defName>CrE_FactionRelationsDeterioration</defName>
+    <category>Misc</category>
+    <workerClass>CrocamedelianExaction.IncidentWorker_FactionRelationsDeterioration</workerClass>
+    <letterLabel>Relations Deterioration</letterLabel>
+    <letterDef>NegativeEvent</letterDef>
+    <letterText>Your relations with a nearby faction have worsened due to your recent activities.</letterText>
+    <targetTags>
+      <li>Map_PlayerHome</li>
+    </targetTags>
+  </IncidentDef>
+
+  <IncidentDef>
+    <defName>CrE_FactionRelationsImprovement</defName>
+    <category>Misc</category>
+    <workerClass>CrocamedelianExaction.IncidentWorker_FactionRelationsImprovement</workerClass>
+    <letterLabel>Relations Improvement</letterLabel>
+    <letterDef>PositiveEvent</letterDef>
+    <letterText>Your recent assertiveness and bold actions have earned you respect.</letterText>
+    <targetTags>
+      <li>Map_PlayerHome</li>
+    </targetTags>
+  </IncidentDef>
+
+
+  <IncidentDef>
+  <defName>CrE_SquatterArrival</defName>
+  <workerClass>CrocamedelianExaction.IncidentWorker_CrESquatterArrival</workerClass>
+  <category>Misc</category>
+  <letterText>A squatter has arrived at your colony and they refuse to leave. They are not interested in participating in work. They'll enjoy your colony's resources until they decide to leave.</letterText>
+  <letterLabel>Squatter Arrival</letterLabel>
+  <letterDef>NegativeEvent</letterDef>
+  <targetTags>
+    <li>Map_PlayerHome</li>
+  </targetTags>
+  <baseChance>0.1</baseChance>
+  <minRefireDays>50</minRefireDays>
+</IncidentDef>
+
+</Defs>

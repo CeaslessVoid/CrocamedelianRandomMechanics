@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <LetterDef ParentName="CustomChoiceLetterBase">
+    <defName>CrE_PiratePawn_Extort_Letter</defName>
+    <letterClass>CrocamedelianExaction.ChoiceLetter_CrE_Demand_Pawn</letterClass>
+  </LetterDef>
+</Defs>

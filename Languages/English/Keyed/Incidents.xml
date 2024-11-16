@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+    <CrE_PiratePawn_Extort>{2} has grown wary of your recent complacency and now demands a tribute in labor. They insist that {1} be sent to serve under their banner for some time, fulfilling their needs and demonstrating your submissiveness. They give you 1 day. Failure to comply will be met with aggression.</CrE_PiratePawn_Extort>
+    <CrE_PiratePawn_ExtortLabel>Pirate Demand</CrE_PiratePawn_ExtortLabel>
+
+    <CrE_AcceptedPiratePawn_Extort>Laughter ensues from hearing that. The pirates promise to use {0}, however does not say anything about returning {0} unharmed.</CrE_AcceptedPiratePawn_Extort>
+    <CrE_RejectedPiratePawn_Extort>Clearly the pirates at {1} will not have this.</CrE_RejectedPiratePawn_Extort>
+
+</LanguageData>

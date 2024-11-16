@@ -1,0 +1,34 @@
+<ModMetaData>
+	<name>Crocamedelian's Random Mechanics</name>
+	<author>Crocamedelian</author>
+    <packageId>Crocamedelian.RandMech</packageId>
+	<supportedVersions>
+		<li>1.5</li>
+	</supportedVersions>
+	<modDependencies>
+		<li>
+			<packageId>brrainz.harmony</packageId>
+			<displayName>Harmony</displayName>
+			<steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+			<downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
+		</li>
+		<li>
+			<packageId>mlie.morefactioninteraction</packageId>
+			<displayName>More Faction Interaction</displayName>
+			<steamWorkshopUrl>steam://url/CommunityFilePage/2379076640</steamWorkshopUrl>
+			<downloadUrl>https://github.com/emipa606/MoreFactionInteraction/releases/latest</downloadUrl>
+		</li>
+		<li>
+			<packageId>rim.job.world</packageId>
+			<displayName>RimJobWorld</displayName>
+			<downloadUrl>https://gitgud.io/Ed86/rjw</downloadUrl>
+		</li>
+	</modDependencies>
+	<loadAfter>
+		<li>brrainz.harmony</li>
+		<li>mlie.morefactioninteraction</li>
+		<li>rim.job.world</li>
+	</loadAfter>
+
+	<description>Adds alot of mechanics to RJW.</description>
+</ModMetaData>
