@@ -14,13 +14,13 @@ namespace CrocamedelianExaction
     [DefOf]
     public static class CrE_DefOf
     {
-        // IDK if we even need this anymore
 
-        //public static IncidentDef CrE_PiratePawn_Extort;
         public static IncidentDef CrE_PiratePawn_Return;
         public static IncidentDef CrE_PiratePawn_NoReturn;
 
-        public static ThoughtDef FeelingBroken;
+        public static ThoughtDef  FeelingBroken;
+
+        public static StatDef     RespectModifier;
     }
 
 }

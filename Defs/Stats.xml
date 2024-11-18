@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <StatDef>
+    <defName>RespectModifier</defName>
+    <label>Respect Modifier</label>
+    <description>Affects the pawn's Respect need.</description>
+    <category>PawnSocial</category>
+    <alwaysHide>true</alwaysHide>
+    <defaultBaseValue>0.0</defaultBaseValue>
+		<minValue>0.0</minValue>
+  </StatDef>
+</Defs>

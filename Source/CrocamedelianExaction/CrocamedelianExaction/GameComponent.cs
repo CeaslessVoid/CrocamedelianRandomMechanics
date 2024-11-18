@@ -31,7 +31,6 @@ namespace CrocamedelianExaction
             CrE_Points = 0;
             has_pawn_out = false;
 
-            //CrE_GameComponent.CapturedPawnsQue.Clear();
             CurrentCrEPawn = null;
             CrE_Pawn_Return_Time = -1;
             CrE_Pirate = null;
@@ -46,6 +45,11 @@ namespace CrocamedelianExaction
             if (GenTicks.IsTickInterval(60000))
             {
                 PerformDailyPawnCheck();
+            }
+
+            if (GenTicks.IsTickInterval(6000))
+            {
+
             }
         }
 
@@ -89,6 +93,7 @@ namespace CrocamedelianExaction
 
             CrE_Pawn_Return_Time = Find.TickManager.TicksGame + UnityEngine.Random.Range(minDays, maxDays);
         }
+
 
         private void PerformDailyPawnCheck()
         {

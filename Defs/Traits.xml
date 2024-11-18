@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <TraitDef>
+    <defName>Alpha</defName>
+    <commonality>0.0</commonality>
+    <degreeDatas>
+      <li>
+        <label>alpha</label>
+        <description>Test</description>
+        <statOffsets>
+          <RespectModifier>10</RespectModifier>
+        </statOffsets>
+      </li>
+    </degreeDatas>
+  </TraitDef>
+
+  <TraitDef>
+    <defName>Beta</defName>
+    <commonality>0.0</commonality>
+    <degreeDatas>
+      <li>
+        <label>beta</label>
+        <description>Test</description>
+        <statOffsets>
+          <RespectModifier>-10</RespectModifier>
+        </statOffsets>
+      </li>
+    </degreeDatas>
+  </TraitDef>
+</Defs>

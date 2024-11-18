@@ -18,7 +18,7 @@ using Verse.Noise;
 
 namespace CrocamedelianExaction
 {
-    public class IncidentWorker_CrEPiratePawnExtort : IncidentWorker_DiplomaticMarriage
+    public class IncidentWorker_CrEPiratePawnExtort : IncidentWorker
     {
         private const int TimeoutTicks = GenDate.TicksPerDay;
         private Pawn victim;
@@ -28,7 +28,7 @@ namespace CrocamedelianExaction
         public override float BaseChanceThisGame => Math.Max(0.01f,
             Mathf.Clamp(base.BaseChanceThisGame - StorytellerUtilityPopulation.PopulationIntent + chance_modifier, 0.0f, 1.0f));
 
-        public override bool CanFireNowSub(IncidentParms parms)
+        protected override bool CanFireNowSub(IncidentParms parms)
         {
             return base.CanFireNowSub(parms) && TryFindPirateLeader(out pirateLeader)
                                              && TryFindVictim(out victim)
@@ -37,7 +37,7 @@ namespace CrocamedelianExaction
                                              && CrE_GameComponent.Settings.CrE_PirateExtort;
         }
 
-        public override bool TryExecuteWorker(IncidentParms parms)
+        protected override bool TryExecuteWorker(IncidentParms parms)
         {
             if (!TryFindPirateLeader(out pirateLeader) || !TryFindVictim(out victim))
             {

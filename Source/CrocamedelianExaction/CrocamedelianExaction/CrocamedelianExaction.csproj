@@ -44,8 +44,9 @@
     <Reference Include="MoreFactionInteraction">
       <HintPath>..\..\..\..\..\..\..\workshop\content\294100\2379076640\1.5\Assemblies\MoreFactionInteraction.dll</HintPath>
     </Reference>
-    <Reference Include="RJW">
-      <HintPath>..\..\..\..\rjw\1.5\Assemblies\RJW.dll</HintPath>
+    <Reference Include="RJW, Version=1.5.9084.23516, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\rjw-master\1.5\Assemblies\RJW.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -63,11 +64,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Respect.cs" />
     <Compile Include="PawnAuction.cs" />
     <Compile Include="GameOverPatch.cs" />
     <Compile Include="UselessSettlers.cs" />
     <Compile Include="RapePatch.cs" />
-    <Compile Include="Copy.cs" />
+    <Compile Include="AAAAAAA.cs" />
     <Compile Include="DefOf.cs" />
     <Compile Include="PawnReturn.cs" />
     <Compile Include="PirateLoseRelations.cs" />

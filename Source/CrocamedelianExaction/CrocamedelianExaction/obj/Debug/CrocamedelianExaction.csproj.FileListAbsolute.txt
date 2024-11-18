@@ -154,3 +154,4 @@ C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\CrocamedelianRandomM
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\CrocamedelianRandomMechanics\Source\CrocamedelianExaction\CrocamedelianExaction\obj\Debug\Crocamed.9D2E2667.Up2Date
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\CrocamedelianRandomMechanics\Source\CrocamedelianExaction\CrocamedelianExaction\obj\Debug\CrocamedelianExaction.dll
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\CrocamedelianRandomMechanics\Source\CrocamedelianExaction\CrocamedelianExaction\obj\Debug\CrocamedelianExaction.pdb
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\CrocamedelianRandomMechanics\Source\CrocamedelianExaction\CrocamedelianExaction\bin\Debug\0PrepatcherAPI.dll

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <NeedDef>
+    <defName>Respect</defName>
+    <label>respect</label>
+    <description>respect</description>
+    <needClass>CrocamedelianExaction.CrE_Need_Respect</needClass>
+    <showOnNeedList>true</showOnNeedList>
+    <major>true</major>
+  </NeedDef>
+</Defs>
