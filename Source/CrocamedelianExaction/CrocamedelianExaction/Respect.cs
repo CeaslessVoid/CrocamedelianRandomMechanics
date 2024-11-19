@@ -78,31 +78,29 @@ namespace CrocamedelianExaction
     {
         public static void Postfix(Pawn_NeedsTracker __instance, Pawn ___pawn)
         {
-            if (___pawn.RaceProps.Humanlike && !__instance.AllNeeds.Exists(n => n.def.defName == "Respect"))
-            {
-                Need respectNeed = new CrE_Need_Respect(___pawn)
-                {
-                    def = DefDatabase<NeedDef>.GetNamed("Respect")
-                };
+            bool respectActive = CrE_GameComponent.Settings.CrE_Respect_Active;
 
-                __instance.AllNeeds.Add(respectNeed);
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(Pawn), "Tick")]
-    public static class PawnTickRespectPatch
-    {
-        public static void Postfix(Pawn __instance)
-        {
-            if (__instance.needs != null)
+            if (___pawn.RaceProps.Humanlike)
             {
-                var respectNeed = __instance.needs.TryGetNeed<CrE_Need_Respect>();
-                if (respectNeed != null && Find.TickManager.TicksGame % 6000 == 0)
+                Need respectNeed = __instance.AllNeeds.FirstOrDefault(n => n.def.defName == "Respect");
+
+                if (respectActive && respectNeed == null)
                 {
-                    respectNeed.UpdateLevel();
+                    Need newRespectNeed = new CrE_Need_Respect(___pawn)
+                    {
+                        def = DefDatabase<NeedDef>.GetNamed("Respect")
+                    };
+
+                    __instance.AllNeeds.Add(newRespectNeed);
+                }
+                else if (!respectActive && respectNeed != null)
+                {
+                    // Remove Respect need if inactive
+                    __instance.AllNeeds.Remove(respectNeed);
                 }
             }
+
         }
     }
+
 }

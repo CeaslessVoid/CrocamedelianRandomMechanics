@@ -36,6 +36,8 @@ namespace CrocamedelianExaction
             Scribe_Values.Look<bool>(ref this.CrE_Squatters, "CrE_Squatters", this.CrE_Squatters, true);
             Scribe_Values.Look<float>(ref this.CrE_SquatterLeaveChance, "CrE_SquatterLeaveChance", 0.3f, true);
 
+            Scribe_Values.Look<bool>(ref this.CrE_Respect_Active, "CrE_Respect_Active", this.CrE_Respect_Active, false);
+
         }
 
         public bool CrE_PirateExtort = true;
@@ -63,6 +65,9 @@ namespace CrocamedelianExaction
         // Squatter
         public bool CrE_Squatters = true;
         public float CrE_SquatterLeaveChance = 0.01f;
+
+        // Respect (Not Finished)
+        public bool CrE_Respect_Active = false;
 
     }
 
@@ -145,6 +150,9 @@ namespace CrocamedelianExaction
                 this._settings.CrE_SquatterLeaveChance = listing_Standard.Slider(this._settings.CrE_SquatterLeaveChance, 0f, 1f);
                 listing_Standard.Gap(12f);
             }
+
+            listing_Standard.CheckboxLabeled("Allow Respect Mechanic (Restart Require, Not finished)", ref this._settings.CrE_Respect_Active);
+            listing_Standard.Gap(6f);
 
             listing_Standard.End();
 

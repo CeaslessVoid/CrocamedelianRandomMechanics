@@ -37,8 +37,6 @@ namespace CrocamedelianExaction
 
         }
 
-
-
         public override void GameComponentTick() // Every day
         {
             base.GameComponentTick();
@@ -47,10 +45,6 @@ namespace CrocamedelianExaction
                 PerformDailyPawnCheck();
             }
 
-            if (GenTicks.IsTickInterval(6000))
-            {
-
-            }
         }
 
         public static void MakePawnSlave(Pawn pawn)
@@ -92,6 +86,24 @@ namespace CrocamedelianExaction
             int maxDays = Settings.CrE_maxDaysBetweenEvents * 60000;
 
             CrE_Pawn_Return_Time = Find.TickManager.TicksGame + UnityEngine.Random.Range(minDays, maxDays);
+        }
+
+        public static void transfercapturedpawnstoworldpawns()
+        {
+            Util.Msg("Moved Kidnapped Pawns");
+
+            foreach (Faction faction in Find.FactionManager.AllFactionsListForReading)
+            {
+                List<Pawn> kidnappedPawns = faction.kidnapped.KidnappedPawnsListForReading;
+
+                foreach (Pawn pawn in kidnappedPawns.ToList())
+                {
+                    faction.kidnapped.RemoveKidnappedPawn(pawn);
+
+                    pawn.SetFaction(faction);
+
+                }
+            }
         }
 
 

@@ -63,6 +63,12 @@ namespace CrocamedelianExaction
             CrE_PiratePawn_Return.Do();
         }
 
+        [DebugAction(null, null, false, false, false, false, 0, false, category = "Crocamedelian Random Mechanics", name = "Send all kidnapped to kidnapper faction", requiresRoyalty = false, requiresIdeology = false, requiresBiotech = false, actionType = 0, allowedGameStates = LudeonTK.AllowedGameStates.Playing)]
+        private static void ToFactionKidnapped() // Prints current CrE points
+        {
+            CrE_GameComponent.transfercapturedpawnstoworldpawns();
+        }
+
         private const string CATEGORY = "Crocamedelian Random Mechanics";
     }
 }

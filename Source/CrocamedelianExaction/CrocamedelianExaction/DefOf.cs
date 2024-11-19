@@ -21,6 +21,10 @@ namespace CrocamedelianExaction
         public static ThoughtDef  FeelingBroken;
 
         public static StatDef     RespectModifier;
+
+        //public static ThoughtDef LowerRespectThought;
+        //public static ThoughtDef HigherRespectThought;
+
     }
 
 }
