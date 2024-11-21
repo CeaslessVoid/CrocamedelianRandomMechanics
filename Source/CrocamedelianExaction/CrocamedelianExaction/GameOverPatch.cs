@@ -14,6 +14,7 @@ using rjw;
 using HarmonyMod;
 using CrocamedelianExaction;
 using RimWorld.Planet;
+using static CrocamedelianExaction.SitePartWorker_CrEPrisonerRescue;
 
 namespace crocamedelianexaction
 {
@@ -52,22 +53,21 @@ namespace crocamedelianexaction
                         };
 
 
-                        //DiaOption diaOption3 = new DiaOption("CrENewColonyPrisoner".Translate());
-                        //diaOption3.action = delegate ()
-                        //{
-                        //    CrE_GameComponent gameComponent = Current.Game.GetComponent<CrE_GameComponent>();
-                        //    gameComponent.ContinueAsCapturedPawn = true;
+                        DiaOption diaOption3 = new DiaOption("CrENewColonyPrisoner".Translate());
+                        diaOption3.action = delegate ()
+                        {
 
-                        //    QuestScriptDef named = DefDatabase<QuestScriptDef>.GetNamed("CrE_PrisonerRescue", true);
-                        //    float num2 = StorytellerUtility.DefaultThreatPointsNow(Current.Game.AnyPlayerHomeMap);
+                            IncidentCrPrisonerRescue.Do(true);
+                            Util.Msg("New Game Clicked");
 
-                        //    QuestUtility.GenerateQuestAndMakeAvailable(named, num2);
+                            //Caravan caravan = CaravanMaker.MakeCaravan(Enumerable.Empty<Pawn>(), Faction.OfPlayer, CrE_GameComponent.CrE_TempMap.Tile, false);
+                            //CrE_GameComponent.EnterMapWithTemporaryEscort(caravan, CrE_GameComponent.CrE_TempMap);
 
-                        //};
-                        //diaOption3.resolveTree = true;
-                        //diaOption3.disabled = (CrE_GameComponent.GetRandomPrisoner() == null);
-                        //diaOption3.disabledReason = ("CrENoPrisoners".Translate());
-                        //yield return diaOption3;
+                        };
+                        diaOption3.resolveTree = true;
+                        diaOption3.disabled = (CrE_GameComponent.GetRandomPrisoner() == null || CrE_GameComponent.GetRandomPirateSettlement() == null);
+                        diaOption3.disabledReason = ("CrENoPrisoners".Translate());
+                        yield return diaOption3;
 
 
 

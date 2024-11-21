@@ -79,6 +79,21 @@ namespace CrocamedelianExaction
 
         }
 
+        public static Settlement GetRandomPirateSettlement()
+        {
+            var pirateSettlements = Find.WorldObjects.Settlements
+                .Where(settlement => settlement.Faction != null
+                                  && settlement.Faction.def.pawnGroupMakers != null
+                                  && settlement.Faction.def.pawnGroupMakers.Any(group => group.options.Any(opt => opt.kind.isFighter))
+                                  && settlement.Faction.def.permanentEnemy
+                                  && !(settlement.Faction.def == FactionDefOf.Mechanoid)
+                                  && !(settlement.Faction.def == FactionDefOf.Insect))
+                .ToList();
+
+            return pirateSettlements.RandomElementWithFallback();
+        }
+
+
         public static void MakePawnSlave(Pawn pawn)
         {
             var pirateFactions = Find.FactionManager.AllFactionsListForReading
@@ -241,7 +256,7 @@ namespace CrocamedelianExaction
 
         public static List<Pawn> CapturedPawnsQueue = new List<Pawn>();
 
-        public bool ContinueAsCapturedPawn = false; //Bugfest
+        
 
         public static Pawn GetRandomPawnForEvent()
         {
@@ -258,6 +273,39 @@ namespace CrocamedelianExaction
             }
 
             return validPawns.RandomElement();
+        }
+
+        // MapLoader
+        public static void EnterMapWithTemporaryEscort(Map targetMap)
+        {
+            Pawn escortPawn = PawnGenerator.GeneratePawn(PawnKindDefOf.Colonist, Faction.OfPlayer);
+            List<Pawn> caravanPawns = new List<Pawn> { escortPawn };
+
+            Util.Msg(caravanPawns);
+            Util.Msg(targetMap);
+            Util.Msg(Faction.OfPlayer);
+
+            int randomTile = Find.WorldGrid.tiles.FindIndex(tile => !tile.biome.impassable);
+            if (randomTile < 0)
+            {
+                Util.Msg("Error: No valid world tiles found for caravan creation.");
+                return;
+            }
+
+            Caravan caravan = CaravanMaker.MakeCaravan(caravanPawns, Faction.OfPlayer, randomTile, false);
+
+            if (caravan == null)
+            {
+                Util.Msg("Error: Failed to create caravan.");
+                return;
+            }
+
+            Util.Msg("Caravan Formed");
+
+            //SettlementUtility
+            CaravanEnterMapUtility.Enter(caravan, targetMap, CaravanEnterMode.Edge, CaravanDropInventoryMode.DoNotDrop, draftColonists: true);
+
+            escortPawn.Destroy(DestroyMode.Vanish);
         }
 
 
@@ -288,7 +336,7 @@ namespace CrocamedelianExaction
         {
             if (CapturedPawnsQueue != null && CapturedPawnsQueue.Count > 0)
             {
-                Pawn pawnFromQueue = CapturedPawnsQueue.RandomElement();
+                Pawn pawnFromQueue = CapturedPawnsQueue.Where(p => !p.Dead).RandomElement();
 
                 if (pawnFromQueue != null)
                 {
@@ -305,7 +353,7 @@ namespace CrocamedelianExaction
 
                 if (factionKidnappedPawns != null && factionKidnappedPawns.Count > 0)
                 {
-                    kidnappedPawns.AddRange(factionKidnappedPawns);
+                    kidnappedPawns.AddRange(factionKidnappedPawns.Where(p => !p.Dead));
                 }
             }
 
@@ -395,6 +443,8 @@ namespace CrocamedelianExaction
             Scribe_Values.Look<int>(ref CrE_NextPrisonRescueTIme, "CrE_NextPrisonRescueTIme", -1, true);
 
             Scribe_Collections.Look(ref CapturedPawnsQueue, "CapturedPawnsQueue", LookMode.Reference);
+
+            Scribe_Values.Look<bool>(ref CrE_IsGameEnd, "CrE_IsGameEnd", false, true);
 
         }
 

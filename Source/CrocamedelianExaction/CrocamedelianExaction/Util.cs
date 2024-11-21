@@ -2,6 +2,7 @@
 using LudeonTK;
 using RimWorld;
 using RimWorld.Planet;
+using rjw;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,60 @@ namespace CrocamedelianExaction
         {
             outExtraDescriptionRules.AddRange(GrammarUtility.RulesForDef("", part.def));
             outExtraDescriptionConstants.Add("sitePart", part.def.defName);
+        }
+
+        public static void HealPawn(Pawn pawn)
+        {
+            IEnumerable<Hediff> enumerable = from hd in pawn.health.hediffSet.hediffs
+                                             where !hd.IsTended() && hd.TendableNow()
+                                             select hd;
+
+            if (enumerable != null)
+            {
+                foreach (Hediff item in enumerable)
+                {
+                    HediffWithComps val = item as HediffWithComps;
+                    if (val != null)
+                        if (val.Bleeding)
+                        {
+                            val.Heal(1.0f);
+                        }
+                        else if ((!val.def.chronic && val.def.lethalSeverity > 0f) || (val.CurStage?.lifeThreatening ?? false))
+                        {
+                            HediffComp_TendDuration val2 = HediffUtility.TryGetComp<HediffComp_TendDuration>(val);
+                            val2.tendQuality = 1f;
+                            val2.tendTicksLeft = 10000;
+                            pawn.health.Notify_HediffChanged(item);
+                        }
+                }
+            }
+
+            List<Hediff> hediffsToRemove = pawn.health.hediffSet.hediffs
+                .Where(hd =>
+                    pawn.health.capacities.GetLevel(PawnCapacityDefOf.Manipulation) == 10 ||
+                    pawn.health.capacities.GetLevel(PawnCapacityDefOf.Moving) <= 10 ||
+                    pawn.health.capacities.GetLevel(PawnCapacityDefOf.Consciousness) <= 10)
+                .ToList();
+
+            foreach (Hediff hediff in hediffsToRemove)
+            {
+                pawn.health.RemoveHediff(hediff);
+            }
+        }
+
+        public static void GiveBadTraits(Pawn pawn)
+        {
+            if (pawn == null) return;
+
+            if (pawn.story.traits.HasTrait(xxx.rapist))
+            {
+                pawn.story.traits.RemoveTrait(pawn.story.traits.GetTrait(xxx.rapist));
+            }
+
+            if (Rand.Chance(0.5f) && !(pawn.story.traits.HasTrait(xxx.masochist)))
+            {
+                pawn.story.traits.GainTrait(pawn.story.traits.GetTrait(xxx.masochist));
+            }
         }
 
         public static void DressPawnIfCold(Pawn pawn, int tile)

@@ -18,19 +18,26 @@ namespace CrocamedelianExaction
 {
     public class SitePartWorker_CrEPrisonerRescue : SitePartWorker_PrisonerWillingToJoin
     {
+        public static bool CrE_IsGameEnd = false;
+        public static Map CrE_TempMap = null;
 
         public static class IncidentCrPrisonerRescue
         {
-            public static bool Do()
+            public static bool Do(bool GameEnd = false)
             {
-                if (!CrE_GameComponent.Settings.CrE_PrisonerRescue)
+                if (!CrE_GameComponent.Settings.CrE_PrisonerRescue || CrE_GameComponent.GetRandomPrisoner() == null)
                     return false;
 
                 QuestScriptDef named = DefDatabase<QuestScriptDef>.GetNamed("CrE_PrisonerRescue", true);
                 float num = StorytellerUtility.DefaultThreatPointsNow(Current.Game.AnyPlayerHomeMap);
-                QuestUtility.SendLetterQuestAvailable(QuestUtility.GenerateQuestAndMakeAvailable(named, num));
 
-                //QuestUtility.GenerateQuestAndMakeAvailable(named, num);
+                if (!GameEnd)
+                    QuestUtility.SendLetterQuestAvailable(QuestUtility.GenerateQuestAndMakeAvailable(named, num));
+                else
+                {
+                    CrE_IsGameEnd = true;
+                    QuestUtility.GenerateQuestAndMakeAvailable(named, num);
+                }
 
                 return true;
             }
@@ -48,32 +55,25 @@ namespace CrocamedelianExaction
 
             Util.SitePartWorker_Base_Notify_GeneratedByQuestGen(part, outExtraDescriptionRules, outExtraDescriptionConstants);
             Pawn randomPawnForSpawning = CrE_GameComponent.GetRandomPrisoner();
+            if (randomPawnForSpawning == null)
+                return;
 
             //CrE_GameComponent.RemovePawnWorld(randomPawnForSpawning);
 
             randomPawnForSpawning.health.AddHediff(xxx.feelingBroken, null, null, null);
+            float brokenSeverityGain = Rand.Range(0.5f, 0.8f);
+            randomPawnForSpawning.health.hediffSet.GetFirstHediffOfDef(xxx.feelingBroken).Severity += brokenSeverityGain;
+
+            //Util.GiveBadTraits(randomPawnForSpawning);
+            randomPawnForSpawning.needs.mood.thoughts.memories.TryGainMemory(xxx.got_raped);
 
             randomPawnForSpawning.guest.SetGuestStatus(part.site.Faction, RimWorld.GuestStatus.Prisoner);
 
             Util.DressPawnIfCold(randomPawnForSpawning, part.site.Tile);
+            Util.HealPawn(randomPawnForSpawning);
+
             part.things = new ThingOwner<Pawn>(part, true, Verse.LookMode.Deep);
             part.things.TryAdd(randomPawnForSpawning, true);
-
-
-            //CrE_GameComponent gameComponent = Current.Game.GetComponent<CrE_GameComponent>();
-            //if (gameComponent.ContinueAsCapturedPawn)
-            //{
-            //    gameComponent.ContinueAsCapturedPawn = false;
-
-            //    randomPawnForSpawning.SetFaction(Faction.OfPlayer, null);
-
-            //    Map enemyMap = part.site.Map;
-            //    //Find.CurrentMap = enemyMap;
-            //    Current.Game.DeinitAndRemoveMap(Find.CurrentMap, false);
-            //    Find.Maps.Add(enemyMap);
-            //    Find.CameraDriver.SetRootPosAndSize(new Vector3(enemyMap.Center.x, 0f, enemyMap.Center.z), 24f);
-
-            //}
 
             string text = "";
 
@@ -90,12 +90,25 @@ namespace CrocamedelianExaction
                 text2 = "";
             }
             outExtraDescriptionRules.Add(new Rule_String("prisonerFullRelationInfo", text2));
+
+            //CrE_TempMap = part.site.Map;
+
+            //if (CrE_IsGameEnd)
+            //{
+            //    Util.Msg("Game Ender Activated");
+            //    CrE_IsGameEnd = false;
+
+            //    CrE_GameComponent.EnterMapWithTemporaryEscort(CrE_TempMap);
+            //}
         }
 
         public override void PostMapGenerate(Map map)
         {
             base.PostMapGenerate(map);
             CrE_GameComponent.CrE_NextPrisonRescueTIme = -2;
+
+            Util.Msg("Prison Rescue Map Generated");
+
         }
 
         public override void PostDestroy(SitePart sitePart)
