@@ -64,6 +64,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PrisonerResuce.cs" />
     <Compile Include="Respect.cs" />
     <Compile Include="PawnAuction.cs" />
     <Compile Include="GameOverPatch.cs" />
@@ -76,7 +77,6 @@
     <Compile Include="PirateGuests.cs" />
     <Compile Include="PirateExtortion.cs" />
     <Compile Include="Temp.cs" />
-    <Compile Include="MFI Patches.cs" />
     <Compile Include="ChoiceLetter_ExtortionDemand_Replace.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="Debug.cs" />

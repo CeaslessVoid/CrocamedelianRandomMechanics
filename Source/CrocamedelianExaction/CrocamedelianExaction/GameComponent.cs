@@ -11,6 +11,8 @@ using Verse;
 using Verse.Noise;
 using UnityEngine;
 using rjw;
+using static CrocamedelianExaction.SitePartWorker_CrEPrisonerRescue;
+using RimWorld.Planet;
 
 namespace CrocamedelianExaction
 {
@@ -23,36 +25,67 @@ namespace CrocamedelianExaction
         public static Settings Settings { get; private set; }
         public CrE_GameComponent(Game game)
         {
-            Settings = LoadedModManager.GetMod<CrEMod>().GetSettings<Settings>();
+            Settings = LoadedModManager.GetMod<CrE_Mod>().GetSettings<Settings>();
         }
 
         public static void InitOnNewGame()
         {
             CrE_Points = 0;
-            has_pawn_out = false;
-
-            CurrentCrEPawn = null;
             CrE_Pawn_Return_Time = -1;
             CrE_Pirate = null;
+            HasPawnOut = false;
+            CurrentCrEPawn = null;
+            CrE_NextPrisonRescueTIme = -1;
 
+            if (CapturedPawnsQueue == null)
+                CapturedPawnsQueue = new List<Pawn>();
+
+        }
+
+        public static void InitOnLoad()
+        {
+
+            if (Settings.EnabledTattoos == null)
+            {
+                Settings.EnabledTattoos = new Dictionary<string, bool>();
+            }
+
+            foreach (var tattoo in DefDatabase<TattooDef>.AllDefsListForReading)
+            {
+                if (!Settings.EnabledTattoos.ContainsKey(tattoo.defName))
+                {
+                    Settings.EnabledTattoos[tattoo.defName] = true;
+
+                    if (tattoo.defName == "NoTattoo_Face" || tattoo.defName == "NoTattoo_Body")
+                    {
+                        Settings.EnabledTattoos[tattoo.defName] = false;
+                    }
+                }
+            }
+
+            if (CapturedPawnsQueue == null)
+                CapturedPawnsQueue = new List<Pawn>();
+
+            CapturedPawnsQueue.Clear();
         }
 
         public override void GameComponentTick() // Every day
         {
             base.GameComponentTick();
+
             if (GenTicks.IsTickInterval(60000))
-            {
                 PerformDailyPawnCheck();
-            }
 
         }
 
         public static void MakePawnSlave(Pawn pawn)
         {
             var pirateFactions = Find.FactionManager.AllFactionsListForReading
-            .Where(faction => faction.def.pawnGroupMakers != null &&
-                              faction.def.pawnGroupMakers.Any(group => group.options.Any(opt => opt.kind.isFighter)) &&
-                              faction.def.permanentEnemy)
+            .Where(faction => faction.def.pawnGroupMakers != null
+                           && faction.def.pawnGroupMakers.Any(group => group.options.Any(opt => opt.kind.isFighter))
+                           && faction.def.permanentEnemy
+                           && !(faction.def == FactionDefOf.Mechanoid)
+                           && !(faction.def == FactionDefOf.Insect))
             .ToList();
 
             if (pirateFactions.Count == 0)
@@ -62,6 +95,13 @@ namespace CrocamedelianExaction
             }
 
             Faction pirateFaction = pirateFactions.RandomElement();
+
+            if (CrE_Pirate != null && CurrentCrEPawn == pawn)
+            {
+                pirateFaction = CrE_Pirate.Faction;
+                CrE_Pirate = null;
+            }
+
 
             pawn.SetFaction(Faction.OfPlayer);
 
@@ -88,7 +128,7 @@ namespace CrocamedelianExaction
             CrE_Pawn_Return_Time = Find.TickManager.TicksGame + UnityEngine.Random.Range(minDays, maxDays);
         }
 
-        public static void transfercapturedpawnstoworldpawns()
+        public static void TransferCapturedPawnsToWorldPawns()
         {
             Util.Msg("Moved Kidnapped Pawns");
 
@@ -105,7 +145,6 @@ namespace CrocamedelianExaction
                 }
             }
         }
-
 
         private void PerformDailyPawnCheck()
         {
@@ -127,7 +166,7 @@ namespace CrocamedelianExaction
             {
                 // All these actions will set the timer back down
                 CrE_GameComponent.CrE_Pawn_Return_Time = -1;
-                has_pawn_out = false;
+                HasPawnOut = false;
 
                 if (Rand.Chance(Settings.CrE_ExtortLossChance))
                 {
@@ -144,7 +183,7 @@ namespace CrocamedelianExaction
             // Forces events to happen -----------------------------------------------------------------------------------------------
             float chance = 0.05f + (float)Math.Round(Math.Exp(2 * ((1 / (1 + Mathf.Exp(-0.02f * CrE_GameComponent.CrE_Points))) - 0.5f)) - 1, 2);
 
-            if (CrE_Pawn_Return_Time == -1 && Rand.Chance(Mathf.Clamp(chance, 0.0f, 1.0f)) && Find.TickManager.TicksGame >= 60000 * 15 && !has_pawn_out && Settings.CrE_PirateExtort)
+            if (Settings.CrE_PirateExtort && !HasPawnOut && CrE_Pawn_Return_Time == -1 && Rand.Chance(Mathf.Clamp(chance, 0.0f, 1.0f)) && Find.TickManager.TicksGame >= 60000 * 30)
             {
                 IncidentDef incidentDef = DefDatabase<IncidentDef>.GetNamed("CrE_PiratePawn_Extort", true);
 
@@ -172,6 +211,13 @@ namespace CrocamedelianExaction
                 Util.Msg(CrELoseRelationsCooldown);
             }
 
+            GetRandomPrisoner();
+
+            if (Settings.CrE_PrisonerRescue && CrE_NextPrisonRescueTIme > 0 && Find.TickManager.TicksGame >= CrE_NextPrisonRescueTIme && CrE_GameComponent.GetRandomPrisoner() != null)
+            {
+                IncidentCrPrisonerRescue.Do();
+            }
+
         }
 
         // Change points
@@ -186,9 +232,13 @@ namespace CrocamedelianExaction
         public static Pawn CrE_Pirate = null;
 
         public static int CrE_Points; // CrE Points
-        public static bool has_pawn_out; // If a pawn has already been taken
+        public static bool HasPawnOut; // If a pawn has already been taken
 
         public static int CrELoseRelationsCooldown; // Cooldown for the lose relationship
+
+        public static int CrE_NextPrisonRescueTIme = -1;
+
+        public static List<Pawn> CapturedPawnsQueue = new List<Pawn>();
 
         public static Pawn GetRandomPawnForEvent()
         {
@@ -196,8 +246,8 @@ namespace CrocamedelianExaction
 
             // Filter based on settings
             IEnumerable<Pawn> validPawns = allPawns.Where(pawn =>
-                (Settings.CrE_Male || pawn.gender != Gender.Male) &&
-                (Settings.CrE_Female || pawn.gender != Gender.Female));
+                (Settings.CrE_Male || pawn.gender != Gender.Male)
+             && (Settings.CrE_Female || pawn.gender != Gender.Female));
 
             if (!validPawns.Any())
             {
@@ -207,9 +257,73 @@ namespace CrocamedelianExaction
             return validPawns.RandomElement();
         }
 
+
+        public static void GetNextPrisonerTime(bool forced = false)
+        {
+            if (GetRandomPrisoner() != null)
+            {
+                if (CrE_NextPrisonRescueTIme == -1 || (Find.TickManager.TicksGame >= CrE_NextPrisonRescueTIme && CrE_NextPrisonRescueTIme >= 0))
+                {
+                    int minDays = Settings.CrE_minDaysBetweenRescue * 60000;
+                    int maxDays = Settings.CrE_maxDaysBetweenRescue * 60000;
+
+                    CrE_NextPrisonRescueTIme = Find.TickManager.TicksGame + UnityEngine.Random.Range(minDays, maxDays);
+                }
+
+                if (forced)
+                {
+                    CrE_NextPrisonRescueTIme = Find.TickManager.TicksGame + (Settings.CrE_forceRescueDays * 60000);
+                }
+
+                return;
+            }
+
+            CrE_NextPrisonRescueTIme = -1;
+        }
+
+        public static Pawn GetRandomPrisoner()
+        {
+            if (CapturedPawnsQueue != null && CapturedPawnsQueue.Count > 0)
+            {
+                Pawn pawnFromQueue = CapturedPawnsQueue.RandomElement();
+
+                if (pawnFromQueue != null)
+                {
+                    CapturedPawnsQueue.Remove(pawnFromQueue);
+                    return pawnFromQueue;
+                }
+            }
+
+            List<Pawn> kidnappedPawns = new List<Pawn>();
+
+            foreach (Faction faction in Find.FactionManager.AllFactions)
+            {
+                List<Pawn> factionKidnappedPawns = faction.kidnapped.KidnappedPawnsListForReading;
+
+                if (factionKidnappedPawns != null && factionKidnappedPawns.Count > 0)
+                {
+                    kidnappedPawns.AddRange(factionKidnappedPawns);
+                }
+            }
+
+            if (kidnappedPawns.Count == 0)
+            {
+                Util.Msg("No Kidnapped Pawns");
+                return null;
+            }
+
+            return kidnappedPawns.RandomElement();
+        }
+
+        public static void RemovePawnWorld(Pawn pawn)
+        {
+            Find.WorldPawns.RemovePawn(pawn);
+        }
+
         public static bool isValidPawn(Pawn pawn)
         {
-            return (Settings.CrE_Male || pawn.gender != Gender.Male) && (Settings.CrE_Female || pawn.gender != Gender.Female);
+            return (Settings.CrE_Male   || pawn.gender != Gender.Male) 
+                && (Settings.CrE_Female || pawn.gender != Gender.Female);
         }
 
         public static void ResetCrELoseRelationsCooldown()
@@ -229,9 +343,17 @@ namespace CrocamedelianExaction
                 return;
             }
 
-            TattooDef selectedTattoo = DefDatabase<TattooDef>.AllDefsListForReading
-                                            .OrderBy(t => Rand.Value)
-                                            .FirstOrDefault();
+            List<TattooDef> enabledTattoos = DefDatabase<TattooDef>.AllDefsListForReading
+                                            .Where(t => CrE_GameComponent.Settings.EnabledTattoos.TryGetValue(t.defName, out bool isEnabled) && isEnabled)
+                                            .ToList();
+
+            if (enabledTattoos.Count == 0)
+            {
+                Log.Warning("No enabled tattoos");
+                return;
+            }
+
+            TattooDef selectedTattoo = enabledTattoos.OrderBy(t => Rand.Value).FirstOrDefault();
 
             if (selectedTattoo != null)
             {
@@ -258,14 +380,18 @@ namespace CrocamedelianExaction
         {
             base.ExposeData();
 
-            Scribe_Values.Look(ref CrE_Points, "CrE_Points", 0, true);
-            Scribe_Values.Look(ref CrELoseRelationsCooldown, "CrELoseRelationsCooldown", 0, true);
-            Scribe_Values.Look(ref has_pawn_out, "has_pawn_out", false, true);
+            Scribe_Values.Look<int>(ref CrE_Points, "CrE_Points", 0, true);
+            Scribe_Values.Look<int>(ref CrELoseRelationsCooldown, "CrELoseRelationsCooldown", 0, true);
+            Scribe_Values.Look<bool>(ref HasPawnOut, "has_pawn_out", false, true);
 
             //Scribe_Collections.Look<Pawn>(ref CrE_GameComponent.CapturedPawnsQue, "CapturedPawnsQue", LookMode.Deep, Array.Empty<object>());
             Scribe_References.Look(ref CurrentCrEPawn, "CurrentCrEPawn");
-            Scribe_Values.Look(ref CrE_Pawn_Return_Time, "CrE_Pawn_Return_Time", -1, true);
+            Scribe_Values.Look<int>(ref CrE_Pawn_Return_Time, "CrE_Pawn_Return_Time", -1, true);
             Scribe_References.Look(ref CrE_Pirate, "CrE_Pirate");
+
+            Scribe_Values.Look<int>(ref CrE_NextPrisonRescueTIme, "CrE_NextPrisonRescueTIme", -1, true);
+
+            Scribe_Collections.Look(ref CapturedPawnsQueue, "CapturedPawnsQueue", LookMode.Reference);
 
         }
 

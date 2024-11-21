@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using static CrocamedelianExaction.SitePartWorker_CrEPrisonerRescue;
 
 namespace CrocamedelianExaction
 {
@@ -17,7 +18,7 @@ namespace CrocamedelianExaction
         private static void PrintCrEPoints() // Prints current CrE points
         {
             Util.Msg("Points " + CrE_GameComponent.CrE_Points);
-            Util.Msg(CrE_GameComponent.has_pawn_out);
+            Util.Msg(CrE_GameComponent.HasPawnOut);
             Util.Msg("Modifier " +(float)Math.Round(Math.Exp(2 * ((1 / (1 + Mathf.Exp(-0.02f * CrE_GameComponent.CrE_Points))) - 0.5f)) - 1, 2));
         }
 
@@ -66,7 +67,28 @@ namespace CrocamedelianExaction
         [DebugAction(null, null, false, false, false, false, 0, false, category = "Crocamedelian Random Mechanics", name = "Send all kidnapped to kidnapper faction", requiresRoyalty = false, requiresIdeology = false, requiresBiotech = false, actionType = 0, allowedGameStates = LudeonTK.AllowedGameStates.Playing)]
         private static void ToFactionKidnapped() // Prints current CrE points
         {
-            CrE_GameComponent.transfercapturedpawnstoworldpawns();
+            CrE_GameComponent.TransferCapturedPawnsToWorldPawns();
+        }
+
+        [DebugAction(null, null, false, false, false, false, 0, false, category = "Crocamedelian Random Mechanics", name = "Do Prisoner Rescue Event", requiresRoyalty = false, requiresIdeology = false, requiresBiotech = false, actionType = 0, allowedGameStates = LudeonTK.AllowedGameStates.Playing)]
+        private static void DoPrisonerRescueEvent() // Prints current CrE points
+        {
+
+            if (CrE_GameComponent.GetRandomPrisoner() != null)
+            {
+                IncidentCrPrisonerRescue.Do();
+            }
+            
+        }
+
+        [DebugAction(null, null, false, false, false, false, 0, false, category = "Crocamedelian Random Mechanics", name = "Print Resuce Time", requiresRoyalty = false, requiresIdeology = false, requiresBiotech = false, actionType = 0, allowedGameStates = LudeonTK.AllowedGameStates.Playing)]
+        private static void PrintRescueTime() // Prints current CrE points
+        {
+
+            Util.Msg(CrE_GameComponent.CrE_NextPrisonRescueTIme);
+            Util.Msg("Ticks Left");
+            Util.Msg(Find.TickManager.TicksGame - CrE_GameComponent.CrE_NextPrisonRescueTIme);
+
         }
 
         private const string CATEGORY = "Crocamedelian Random Mechanics";

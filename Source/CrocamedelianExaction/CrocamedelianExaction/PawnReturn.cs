@@ -75,6 +75,12 @@ namespace CrocamedelianExaction
             //CrE_GameComponent.CapturedPawnsQue.Add(pawn);
             CrE_GameComponent.MakePawnSlave(pawn);
 
+            if (CrE_GameComponent.Settings.CrE_forceRescue)
+            {
+                CrE_GameComponent.CapturedPawnsQueue.Add(pawn);
+                CrE_GameComponent.GetNextPrisonerTime(true);
+            }
+
             foreach (Pawn colonist in PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_Colonists)
             {
 

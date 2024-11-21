@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
-  <TraitDef>
+  <!-- <TraitDef>
     <defName>Alpha</defName>
     <commonality>0.0</commonality>
     <degreeDatas>
@@ -26,5 +26,5 @@
         </statOffsets>
       </li>
     </degreeDatas>
-  </TraitDef>
+  </TraitDef> -->
 </Defs>

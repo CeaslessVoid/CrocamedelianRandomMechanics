@@ -19,7 +19,6 @@ namespace CrocamedelianExaction
         protected override bool CanFireNowSub(IncidentParms parms)
         {
             return base.CanFireNowSub(parms) && !this.IsScenarioBlocked()
-                                             && !CrE_GameComponent.has_pawn_out
                                              && CrE_GameComponent.Settings.CrE_Squatters;
         }
         protected override bool TryExecuteWorker(IncidentParms parms)

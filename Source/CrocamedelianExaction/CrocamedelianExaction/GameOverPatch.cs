@@ -50,10 +50,18 @@ namespace crocamedelianexaction
                             resolveTree = true
                         };
 
-                        yield return new DiaOption("A New Adventure")
+
+                        DiaOption diaOption3 = new DiaOption("CrENewColonyPrisoner".Translate());
+                        diaOption3.action = delegate ()
                         {
-                            resolveTree = true
+
                         };
+                        diaOption3.resolveTree = true;
+                        diaOption3.disabled = (CrE_GameComponent.GetRandomPrisoner() == null);
+                        diaOption3.disabledReason = ("CrENoPrisoners".Translate());
+                        yield return diaOption3;
+
+
 
                         float num = (float)(20000 - (GenTicks.TicksGame - this.arrivalTick)) / 2500f;
                         DiaOption diaOption = new DiaOption((num > 0f) ? "GameOverCreateNewWanderersWait".Translate(Math.Ceiling((double)num)) : "GameOverCreateNewWanderers".Translate());

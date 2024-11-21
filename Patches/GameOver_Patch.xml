@@ -1,14 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Patch>
-  <!-- <Operation Class="PatchOperationReplace">
-    <li Class="PatchOperationReplace">
-      <xpath>Defs/LetterDef[defName="GameEnded"]/letterClass</xpath>
-      <value>
-        <letterClass>CrocamedelianExaction.CrE_ChoiceLetter_GameEnded</letterClass>
-      </value>
-    </li>
-  </Operation> -->
-
   <Operation Class="PatchOperationSequence">
 		<success>Always</success>
 		<operations>

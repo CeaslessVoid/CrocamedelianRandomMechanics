@@ -83,7 +83,6 @@ namespace CrocamedelianExaction
             Scribe_Values.Look(ref completed, "completed");
         }
 
-
     }
 
     [HarmonyPatch(typeof(IncidentWorker_Extortion), "BaseChanceThisGame", MethodType.Getter)]

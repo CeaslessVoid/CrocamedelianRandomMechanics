@@ -33,7 +33,7 @@ namespace CrocamedelianExaction
             return base.CanFireNowSub(parms) && TryFindPirateLeader(out pirateLeader)
                                              && TryFindVictim(out victim)
                                              && !this.IsScenarioBlocked()
-                                             && !CrE_GameComponent.has_pawn_out
+                                             && !CrE_GameComponent.HasPawnOut
                                              && CrE_GameComponent.Settings.CrE_PirateExtort;
         }
 
@@ -50,12 +50,15 @@ namespace CrocamedelianExaction
 
             var ChoiceLetter_CrE_Demand_Pawn =
                 (ChoiceLetter_CrE_Demand_Pawn)LetterMaker.MakeLetter(def.letterLabel, text, def.letterDef);
+
             ChoiceLetter_CrE_Demand_Pawn.title =
                 "CrE_PiratePawn_ExtortLabel".Translate(victim.LabelShort).CapitalizeFirst();
+
             ChoiceLetter_CrE_Demand_Pawn.radioMode = false;
             ChoiceLetter_CrE_Demand_Pawn.pirateLeader = pirateLeader;
             ChoiceLetter_CrE_Demand_Pawn.victim = victim;
             ChoiceLetter_CrE_Demand_Pawn.StartTimeout(TimeoutTicks);
+
             Find.LetterStack.ReceiveLetter(ChoiceLetter_CrE_Demand_Pawn);
             return true;
         }
@@ -75,7 +78,8 @@ namespace CrocamedelianExaction
                           && !x.Faction.defeated
                           && !x.Spawned && x.RaceProps.Humanlike
                           && !SettlementUtility.IsPlayerAttackingAnySettlementOf(x.Faction)
-                    select x).TryRandomElement(out pirateLeader);
+                           select x)
+                          .TryRandomElement(out pirateLeader);
         }
     }
 
@@ -98,13 +102,13 @@ namespace CrocamedelianExaction
                 }
                 else
                 {
-                    var accept = new DiaOption("RansomDemand_Accept".Translate())
+                    var accept = new DiaOption("CrE_RansomDemand_Accept".Translate())
                     {
                         action = () =>
                         {
 
                             CrE_GameComponent.ChangeCrEPoints(Rand.Range(3,5));
-                            CrE_GameComponent.has_pawn_out = true;
+                            CrE_GameComponent.HasPawnOut = true;
                             CrE_GameComponent.CurrentCrEPawn = victim;
 
                             var caravan = victim.GetCaravan();
@@ -142,7 +146,29 @@ namespace CrocamedelianExaction
                     dialogueNodeAccept.options.Add(Option_Close);
                     accept.link = dialogueNodeAccept;
 
-                    var reject = new DiaOption("RansomDemand_Reject".Translate())
+
+                    int bribeAmount = CalculateBribeAmount(victim);
+                    var money = new DiaOption("CrE_RansomDemand_Money".Translate(bribeAmount))
+                    {
+                        action = () =>
+                        {
+
+                            CrE_GameComponent.ChangeCrEPoints(Rand.Range(1, 2));
+                            TradeUtility.LaunchSilver(Find.CurrentMap, bribeAmount);
+                            Find.LetterStack.RemoveLetter(this);
+                        }
+                    };
+                    if (!TradeUtility.ColonyHasEnoughSilver(Find.CurrentMap, bribeAmount))
+                    {
+                        money.Disable("CrE_NotEnoughSilver".Translate(bribeAmount));
+                    }
+                    var dialogueNodeMoney = new DiaNode("CrE_MoneyPiratePawn_Extort"
+                        .Translate(bribeAmount, pirateLeader.Faction).CapitalizeFirst().AdjustedFor(pirateLeader));
+                    dialogueNodeMoney.options.Add(Option_Close);
+                    money.link = dialogueNodeMoney;
+
+
+                    var reject = new DiaOption("CrE_RansomDemand_Reject".Translate())
                     {
                         action = () =>
                         {
@@ -168,18 +194,26 @@ namespace CrocamedelianExaction
                     reject.link = dialogueNodeReject;
 
                     yield return accept;
+                    yield return money;
                     yield return reject;
                     yield return Option_Postpone;
                 }
             }
         }
-
+        private int CalculateBribeAmount(Pawn pawn)
+        {
+            float pawnWealth = pawn.MarketValue;
+            float factor = 0.75f;
+            return Mathf.CeilToInt(pawnWealth * factor);
+        }
         private static void DetermineAndDoOutcome(Pawn pirate, Pawn victim)
         {
 
-            victim.SetFaction(!pirate.HostileTo(Faction.OfPlayer)
-                ? pirate.Faction
-                : null);
+            //victim.SetFaction(!pirate.HostileTo(Faction.OfPlayer)
+            //    ? pirate.Faction
+            //    : null);
+
+            victim.SetFaction(pirate.Faction);
 
             Faction.OfPlayer.ideos?.RecalculateIdeosBasedOnPlayerPawns();
 

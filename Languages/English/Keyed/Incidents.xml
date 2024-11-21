@@ -4,6 +4,14 @@
     <CrE_PiratePawn_ExtortLabel>Pirate Demand</CrE_PiratePawn_ExtortLabel>
 
     <CrE_AcceptedPiratePawn_Extort>Laughter ensues from hearing that. The pirates promise to use {0}, however does not say anything about returning {0} unharmed.</CrE_AcceptedPiratePawn_Extort>
+    <CrE_MoneyPiratePawn_Extort>The silver is enough to satisfy the pirates for now</CrE_MoneyPiratePawn_Extort>
     <CrE_RejectedPiratePawn_Extort>Clearly the pirates at {1} will not have this.</CrE_RejectedPiratePawn_Extort>
 
+    <CrE_RansomDemand_Accept>Accept</CrE_RansomDemand_Accept>
+    <CrE_RansomDemand_Money>Pay Instead {0}</CrE_RansomDemand_Money>
+    <CrE_NotEnoughSilver>{0} silver needed near trade beacon</CrE_NotEnoughSilver>
+    <CrE_RansomDemand_Reject>Reject</CrE_RansomDemand_Reject>
+
+
+    <CrENewColonyPrisoner>Continue as a lost colonist</CrENewColonyPrisoner>
 </LanguageData>
