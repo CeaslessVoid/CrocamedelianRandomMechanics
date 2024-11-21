@@ -59,6 +59,22 @@ namespace CrocamedelianExaction
             part.things = new ThingOwner<Pawn>(part, true, Verse.LookMode.Deep);
             part.things.TryAdd(randomPawnForSpawning, true);
 
+
+            //CrE_GameComponent gameComponent = Current.Game.GetComponent<CrE_GameComponent>();
+            //if (gameComponent.ContinueAsCapturedPawn)
+            //{
+            //    gameComponent.ContinueAsCapturedPawn = false;
+
+            //    randomPawnForSpawning.SetFaction(Faction.OfPlayer, null);
+
+            //    Map enemyMap = part.site.Map;
+            //    //Find.CurrentMap = enemyMap;
+            //    Current.Game.DeinitAndRemoveMap(Find.CurrentMap, false);
+            //    Find.Maps.Add(enemyMap);
+            //    Find.CameraDriver.SetRootPosAndSize(new Vector3(enemyMap.Center.x, 0f, enemyMap.Center.z), 24f);
+
+            //}
+
             string text = "";
 
             PawnRelationUtility.Notify_PawnsSeenByPlayer(Gen.YieldSingle<Pawn>(randomPawnForSpawning), out text, true, false);

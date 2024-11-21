@@ -40,6 +40,7 @@ namespace CrocamedelianExaction
             if (CapturedPawnsQueue == null)
                 CapturedPawnsQueue = new List<Pawn>();
 
+
         }
 
         public static void InitOnLoad()
@@ -239,6 +240,8 @@ namespace CrocamedelianExaction
         public static int CrE_NextPrisonRescueTIme = -1;
 
         public static List<Pawn> CapturedPawnsQueue = new List<Pawn>();
+
+        public bool ContinueAsCapturedPawn = false; //Bugfest
 
         public static Pawn GetRandomPawnForEvent()
         {

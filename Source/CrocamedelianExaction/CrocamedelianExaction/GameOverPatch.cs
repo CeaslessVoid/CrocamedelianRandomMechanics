@@ -13,6 +13,7 @@ using UnityEngine;
 using rjw;
 using HarmonyMod;
 using CrocamedelianExaction;
+using RimWorld.Planet;
 
 namespace crocamedelianexaction
 {
@@ -51,15 +52,22 @@ namespace crocamedelianexaction
                         };
 
 
-                        DiaOption diaOption3 = new DiaOption("CrENewColonyPrisoner".Translate());
-                        diaOption3.action = delegate ()
-                        {
+                        //DiaOption diaOption3 = new DiaOption("CrENewColonyPrisoner".Translate());
+                        //diaOption3.action = delegate ()
+                        //{
+                        //    CrE_GameComponent gameComponent = Current.Game.GetComponent<CrE_GameComponent>();
+                        //    gameComponent.ContinueAsCapturedPawn = true;
 
-                        };
-                        diaOption3.resolveTree = true;
-                        diaOption3.disabled = (CrE_GameComponent.GetRandomPrisoner() == null);
-                        diaOption3.disabledReason = ("CrENoPrisoners".Translate());
-                        yield return diaOption3;
+                        //    QuestScriptDef named = DefDatabase<QuestScriptDef>.GetNamed("CrE_PrisonerRescue", true);
+                        //    float num2 = StorytellerUtility.DefaultThreatPointsNow(Current.Game.AnyPlayerHomeMap);
+
+                        //    QuestUtility.GenerateQuestAndMakeAvailable(named, num2);
+
+                        //};
+                        //diaOption3.resolveTree = true;
+                        //diaOption3.disabled = (CrE_GameComponent.GetRandomPrisoner() == null);
+                        //diaOption3.disabledReason = ("CrENoPrisoners".Translate());
+                        //yield return diaOption3;
 
 
 
