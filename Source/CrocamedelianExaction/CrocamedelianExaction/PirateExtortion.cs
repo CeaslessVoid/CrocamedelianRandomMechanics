@@ -209,11 +209,11 @@ namespace CrocamedelianExaction
         private static void DetermineAndDoOutcome(Pawn pirate, Pawn victim)
         {
 
-            //victim.SetFaction(!pirate.HostileTo(Faction.OfPlayer)
-            //    ? pirate.Faction
-            //    : null);
+            victim.SetFaction(!pirate.HostileTo(Faction.OfPlayer)
+                ? pirate.Faction
+                : null);
 
-            victim.SetFaction(pirate.Faction);
+            //victim.SetFaction(pirate.Faction);
 
             Faction.OfPlayer.ideos?.RecalculateIdeosBasedOnPlayerPawns();
 
