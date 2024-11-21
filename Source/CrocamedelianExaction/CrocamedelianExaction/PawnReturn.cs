@@ -1,8 +1,5 @@
 ﻿using HarmonyLib;
 using LudeonTK;
-using MoreFactionInteraction;
-using MoreFactionInteraction.General;
-using MoreFactionInteraction.MoreFactionWar;
 using RimWorld;
 using RimWorld.Planet;
 using System;

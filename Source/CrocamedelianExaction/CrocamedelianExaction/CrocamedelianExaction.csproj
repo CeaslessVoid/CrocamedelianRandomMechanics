@@ -41,9 +41,6 @@
     <Reference Include="HarmonyMod">
       <HintPath>..\..\..\..\..\..\..\workshop\content\294100\2009463077\1.4\Assemblies\HarmonyMod.dll</HintPath>
     </Reference>
-    <Reference Include="MoreFactionInteraction">
-      <HintPath>..\..\..\..\..\..\..\workshop\content\294100\2379076640\1.5\Assemblies\MoreFactionInteraction.dll</HintPath>
-    </Reference>
     <Reference Include="RJW, Version=1.5.9084.23516, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\rjw-master\1.5\Assemblies\RJW.dll</HintPath>

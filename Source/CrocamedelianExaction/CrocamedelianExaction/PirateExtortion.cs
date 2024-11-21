@@ -1,8 +1,5 @@
 ﻿using HarmonyLib;
 using LudeonTK;
-using MoreFactionInteraction;
-using MoreFactionInteraction.General;
-using MoreFactionInteraction.MoreFactionWar;
 using RimWorld;
 using RimWorld.Planet;
 using System;
@@ -32,7 +29,6 @@ namespace CrocamedelianExaction
         {
             return base.CanFireNowSub(parms) && TryFindPirateLeader(out pirateLeader)
                                              && TryFindVictim(out victim)
-                                             && !this.IsScenarioBlocked()
                                              && !CrE_GameComponent.HasPawnOut
                                              && CrE_GameComponent.Settings.CrE_PirateExtort;
         }
