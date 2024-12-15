@@ -18,7 +18,6 @@ namespace CrocamedelianExaction
         private static void PrintCrEPoints() // Prints current CrE points
         {
             Util.Msg("Points " + CrE_GameComponent.CrE_Points);
-            Util.Msg(CrE_GameComponent.HasPawnOut);
             Util.Msg("Modifier " +(float)Math.Round(Math.Exp(2 * ((1 / (1 + Mathf.Exp(-0.02f * CrE_GameComponent.CrE_Points))) - 0.5f)) - 1, 2));
         }
 

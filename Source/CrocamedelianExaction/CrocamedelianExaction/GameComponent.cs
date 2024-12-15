@@ -32,8 +32,7 @@ namespace CrocamedelianExaction
         {
             CrE_Points = 0;
             CrE_Pawn_Return_Time = -1;
-            CrE_Pirate = null;
-            HasPawnOut = false;
+            CrE_PirateFaction = null;
             CurrentCrEPawn = null;
             CrE_NextPrisonRescueTIme = -1;
 
@@ -112,10 +111,10 @@ namespace CrocamedelianExaction
 
             Faction pirateFaction = pirateFactions.RandomElement();
 
-            if (CrE_Pirate != null && CurrentCrEPawn == pawn)
+            if (CrE_PirateFaction != null && CurrentCrEPawn == pawn)
             {
-                pirateFaction = CrE_Pirate.Faction;
-                CrE_Pirate = null;
+                pirateFaction = CrE_PirateFaction;
+                CrE_PirateFaction = null;
             }
 
 
@@ -173,7 +172,7 @@ namespace CrocamedelianExaction
                 if (CurrentCrEPawn.gender == Gender.Female && Rand.Chance(Settings.CrE_ExtortPregChance))
                 {
                     Util.Msg("Tried To Give Preg");
-                    PregnancyHelper.AddPregnancyHediff(CurrentCrEPawn, CrE_Pirate);
+                    //PregnancyHelper.AddPregnancyHediff(CurrentCrEPawn, CrE_PirateFaction.RandomPawnKind());
                 }
 
             }
@@ -182,7 +181,6 @@ namespace CrocamedelianExaction
             {
                 // All these actions will set the timer back down
                 CrE_GameComponent.CrE_Pawn_Return_Time = -1;
-                HasPawnOut = false;
 
                 if (Rand.Chance(Settings.CrE_ExtortLossChance))
                 {
@@ -192,22 +190,6 @@ namespace CrocamedelianExaction
                 {
                     CrE_PiratePawn_Return.Do();
                 }
-
-                return;
-            }
-
-            // Forces events to happen -----------------------------------------------------------------------------------------------
-            float chance = 0.05f + (float)Math.Round(Math.Exp(2 * ((1 / (1 + Mathf.Exp(-0.02f * CrE_GameComponent.CrE_Points))) - 0.5f)) - 1, 2);
-
-            if (Settings.CrE_PirateExtort && !HasPawnOut && CrE_Pawn_Return_Time == -1 && Rand.Chance(Mathf.Clamp(chance, 0.0f, 1.0f)) && Find.TickManager.TicksGame >= 60000 * 30)
-            {
-                IncidentDef incidentDef = DefDatabase<IncidentDef>.GetNamed("CrE_PiratePawn_Extort", true);
-
-                var incidentParms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.Misc, Find.AnyPlayerHomeMap);
-                incidentParms.forced = true;
-                incidentParms.target = Find.AnyPlayerHomeMap;
-
-                bool result = incidentDef.Worker.TryExecute(incidentParms);
 
                 return;
             }
@@ -245,10 +227,9 @@ namespace CrocamedelianExaction
         //public static List<Pawn> CapturedPawnsQue = new List<Pawn>();
         public static int CrE_Pawn_Return_Time = -1; // Time to return
         public static Pawn CurrentCrEPawn = null;
-        public static Pawn CrE_Pirate = null;
+        public static Faction CrE_PirateFaction = null;
 
         public static int CrE_Points; // CrE Points
-        public static bool HasPawnOut; // If a pawn has already been taken
 
         public static int CrELoseRelationsCooldown; // Cooldown for the lose relationship
 
@@ -373,9 +354,11 @@ namespace CrocamedelianExaction
 
         public static bool isValidPawn(Pawn pawn)
         {
-            return (Settings.CrE_Male   || pawn.gender != Gender.Male) 
-                && (Settings.CrE_Female || pawn.gender != Gender.Female);
+            return (Settings.CrE_Male || pawn.gender != Gender.Male)
+                && (Settings.CrE_Female || pawn.gender != Gender.Female)
+                && pawn.ageTracker.AgeBiologicalYears > 19;
         }
+
 
         public static void ResetCrELoseRelationsCooldown()
         {
@@ -433,12 +416,11 @@ namespace CrocamedelianExaction
 
             Scribe_Values.Look<int>(ref CrE_Points, "CrE_Points", 0, true);
             Scribe_Values.Look<int>(ref CrELoseRelationsCooldown, "CrELoseRelationsCooldown", 0, true);
-            Scribe_Values.Look<bool>(ref HasPawnOut, "has_pawn_out", false, true);
 
             //Scribe_Collections.Look<Pawn>(ref CrE_GameComponent.CapturedPawnsQue, "CapturedPawnsQue", LookMode.Deep, Array.Empty<object>());
             Scribe_References.Look(ref CurrentCrEPawn, "CurrentCrEPawn");
             Scribe_Values.Look<int>(ref CrE_Pawn_Return_Time, "CrE_Pawn_Return_Time", -1, true);
-            Scribe_References.Look(ref CrE_Pirate, "CrE_Pirate");
+            Scribe_References.Look(ref CrE_PirateFaction, "CrE_PirateFaction");
 
             Scribe_Values.Look<int>(ref CrE_NextPrisonRescueTIme, "CrE_NextPrisonRescueTIme", -1, true);
 

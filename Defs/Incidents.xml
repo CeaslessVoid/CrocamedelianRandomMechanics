@@ -5,14 +5,15 @@
     <label>CrE Pirate Pawn Extort</label>
     <category>Misc</category>
     <targetTags>
-      <li>World</li>
+      <li>Map_PlayerHome</li>
     </targetTags>
     <workerClass>CrocamedelianExaction.IncidentWorker_CrEPiratePawnExtort</workerClass>
     <letterLabel>Pirate Demand</letterLabel>
     <letterDef>CrE_PiratePawn_Extort_Letter</letterDef>
-    <baseChance>0.5</baseChance>
-    <earliestDay>15</earliestDay>
+    <baseChance>9999999</baseChance>
+    <earliestDay>0</earliestDay>
     <minRefireDays>30</minRefireDays>
+    <letterDef>NegativeEvent</letterDef>
   </IncidentDef>
 
   <IncidentDef>
