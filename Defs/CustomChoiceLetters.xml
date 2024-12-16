@@ -3,5 +3,10 @@
   <LetterDef ParentName="CustomChoiceLetterBase">
     <defName>CrE_PiratePawn_Extort_Letter</defName>
     <letterClass>CrocamedelianExaction.ChoiceLetter_CrE_Demand_Pawn</letterClass>
+    <color>(204, 155, 125)</color>
+    <flashColor>(255, 155, 95)</flashColor>
+    <flashInterval>16</flashInterval>
+    <bounce>true</bounce>
+    <arriveSound>LetterArrive_BadUrgent</arriveSound>
   </LetterDef>
 </Defs>

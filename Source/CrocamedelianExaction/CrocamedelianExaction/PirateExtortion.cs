@@ -17,7 +17,7 @@ namespace CrocamedelianExaction
 {
     public class IncidentWorker_CrEPiratePawnExtort : IncidentWorker
     {
-        private const int TimeoutTicks = GenDate.TicksPerDay;
+        private const int TimeoutTicks = GenDate.TicksPerDay / 8;
         private Pawn victim;
         private Faction faction;
 
@@ -42,14 +42,14 @@ namespace CrocamedelianExaction
             }
 
             var text = "CrE_PiratePawn_Extort"
-                .Translate(faction.Name, victim.LabelShort)
+                .Translate(victim.LabelShort, faction.Name)
                 .CapitalizeFirst();
 
             var ChoiceLetter_CrE_Demand_Pawn =
                 (ChoiceLetter_CrE_Demand_Pawn)LetterMaker.MakeLetter(def.letterLabel, text, def.letterDef);
 
             ChoiceLetter_CrE_Demand_Pawn.title =
-                "CrE_PiratePawn_ExtortLabel".Translate(victim.LabelShort).CapitalizeFirst();
+                "CrE_PiratePawn_ExtortLabel".Translate().CapitalizeFirst();
 
             ChoiceLetter_CrE_Demand_Pawn.radioMode = false;
             ChoiceLetter_CrE_Demand_Pawn.faction = faction;
@@ -80,7 +80,9 @@ namespace CrocamedelianExaction
                     where f.HostileTo(Faction.OfPlayer)
                           && !f.def.hidden
                           && !f.defeated
-                          && f.def.humanlikeFaction 
+                          && f.def.humanlikeFaction
+                          && f.def.permanentEnemy
+                          && !SettlementUtility.IsPlayerAttackingAnySettlementOf(f)
                     select f).TryRandomElement(out faction);
         }
     }
@@ -93,6 +95,13 @@ namespace CrocamedelianExaction
 
         public override bool CanShowInLetterStack => base.CanShowInLetterStack
                                                     && PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_FreeColonists.Contains(victim);
+        public override bool CanDismissWithRightClick
+        {
+            get
+            {
+                return false;
+            }
+        }
 
         public override IEnumerable<DiaOption> Choices
         {
@@ -109,7 +118,6 @@ namespace CrocamedelianExaction
                         action = () =>
                         {
                             CrE_GameComponent.ChangeCrEPoints(Rand.Range(3, 5));
-                            CrE_GameComponent.CurrentCrEPawn = victim;
 
                             var caravan = victim.GetCaravan();
                             if (caravan != null)
@@ -132,10 +140,7 @@ namespace CrocamedelianExaction
                                 }
                             }
 
-                            CrE_GameComponent.DoPirateTakePawn();
                             DetermineAndDoOutcome(faction, victim);
-                            CrE_GameComponent.CrE_PirateFaction = faction;
-
                             Find.LetterStack.RemoveLetter(this);
                         }
                     };
@@ -195,8 +200,38 @@ namespace CrocamedelianExaction
 
         private static void DetermineAndDoOutcome(Faction faction, Pawn victim)
         {
-            victim.SetFaction(faction);
+            victim.SetFaction(null);
+            int lostTime = PawnLostTime();
+
+
+            CrE_GameComponent.PirateExtortPawn.Add(new PirateExtortPawnData(victim, lostTime, NextDate(), faction));
+
+            int cooldownTicks = lostTime * 2;
+            if (CrE_GameComponent.FactionRaidCooldowns.ContainsKey(faction))
+            {
+                CrE_GameComponent.FactionRaidCooldowns[faction] = cooldownTicks;
+            }
+            else
+            {
+                CrE_GameComponent.FactionRaidCooldowns.Add(faction, cooldownTicks);
+            }
+
             Faction.OfPlayer.ideos?.RecalculateIdeosBasedOnPlayerPawns();
+        }
+
+        private static int PawnLostTime()
+        {
+            int minDays = CrE_GameComponent.Settings.CrE_minDaysBetweenEvents * 60000;
+            int maxDays = CrE_GameComponent.Settings.CrE_maxDaysBetweenEvents * 60000;
+
+            float pointsMod = Math.Max(1f, CrE_GameComponent.CrE_Points * CrE_GameComponent.Settings.CrE_pointsMod);
+
+            return Find.TickManager.TicksGame + (int)(UnityEngine.Random.Range(minDays, maxDays) * pointsMod) + (GenDate.TicksPerDay / 2); //Add an extra 1/2 day for check
+        }
+
+        private static int NextDate()
+        {
+            return Find.TickManager.TicksGame + (GenDate.TicksPerDay / 2);
         }
 
         public override void ExposeData()

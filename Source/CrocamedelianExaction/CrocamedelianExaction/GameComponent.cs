@@ -31,15 +31,14 @@ namespace CrocamedelianExaction
         public static void InitOnNewGame()
         {
             CrE_Points = 0;
-            CrE_Pawn_Return_Time = -1;
-            CrE_PirateFaction = null;
-            CurrentCrEPawn = null;
+
             CrE_NextPrisonRescueTIme = -1;
 
-            if (CapturedPawnsQueue == null)
-                CapturedPawnsQueue = new List<Pawn>();
+            if (PirateExtortPawn == null)
+                PirateExtortPawn = new List<PirateExtortPawnData>();
 
-
+            if (FactionRaidCooldowns == null)
+                FactionRaidCooldowns = new Dictionary<Faction, int>();
         }
 
         public static void InitOnLoad()
@@ -63,10 +62,12 @@ namespace CrocamedelianExaction
                 }
             }
 
-            if (CapturedPawnsQueue == null)
-                CapturedPawnsQueue = new List<Pawn>();
+            if (PirateExtortPawn == null)
+                PirateExtortPawn = new List<PirateExtortPawnData>();
 
-            CapturedPawnsQueue.Clear();
+            if (FactionRaidCooldowns == null)
+                FactionRaidCooldowns = new Dictionary<Faction, int>();
+
         }
 
         public override void GameComponentTick() // Every day
@@ -75,6 +76,9 @@ namespace CrocamedelianExaction
 
             if (GenTicks.IsTickInterval(60000))
                 PerformDailyPawnCheck();
+
+            if (GenTicks.IsTickInterval(3000))
+                PerformCheck();
 
         }
 
@@ -92,61 +96,32 @@ namespace CrocamedelianExaction
             return pirateSettlements.RandomElementWithFallback();
         }
 
-
-        public static void MakePawnSlave(Pawn pawn)
+        public static void CleanupFactionRaidCooldowns()
         {
-            var pirateFactions = Find.FactionManager.AllFactionsListForReading
-            .Where(faction => faction.def.pawnGroupMakers != null
-                           && faction.def.pawnGroupMakers.Any(group => group.options.Any(opt => opt.kind.isFighter))
-                           && faction.def.permanentEnemy
-                           && !(faction.def == FactionDefOf.Mechanoid)
-                           && !(faction.def == FactionDefOf.Insect))
-            .ToList();
+            var expiredFactions = FactionRaidCooldowns
+                .Where(kvp => Find.TickManager.TicksGame >= kvp.Value)
+                .Select(kvp => kvp.Key)
+                .ToList();
 
-            if (pirateFactions.Count == 0)
+            foreach (var faction in expiredFactions)
             {
-                Log.Warning("No pirate factions available to kidnap this pawn.");
-                return;
+                FactionRaidCooldowns.Remove(faction);
             }
+        }
 
-            Faction pirateFaction = pirateFactions.RandomElement();
-
-            if (CrE_PirateFaction != null && CurrentCrEPawn == pawn)
-            {
-                pirateFaction = CrE_PirateFaction;
-                CrE_PirateFaction = null;
-            }
-
-
+        public static void MakePawnSlave(Pawn pawn, Faction faction)
+        {
             pawn.SetFaction(Faction.OfPlayer);
 
-            if (!Find.WorldPawns.Contains(pawn))
-            {
-                Find.WorldPawns.PassToWorld(pawn);
-                if (!Find.WorldPawns.Contains(pawn))
-                {
-                    Log.Error("WorldPawns discarded kidnapped pawn.");
-                    return;
-                }
-            }
-
-            pirateFaction.kidnapped.KidnappedPawnsListForReading.Add(pawn);
+            faction.kidnapped.KidnappedPawnsListForReading.Add(pawn);
 
             Find.GameEnder.CheckOrUpdateGameOver();
         }
 
-        public static void DoPirateTakePawn()
-        {
-            int minDays = Settings.CrE_minDaysBetweenEvents * 60000;
-            int maxDays = Settings.CrE_maxDaysBetweenEvents * 60000;
-
-            CrE_Pawn_Return_Time = Find.TickManager.TicksGame + UnityEngine.Random.Range(minDays, maxDays);
-        }
+        
 
         public static void TransferCapturedPawnsToWorldPawns()
         {
-            Util.Msg("Moved Kidnapped Pawns");
-
             foreach (Faction faction in Find.FactionManager.AllFactionsListForReading)
             {
                 List<Pawn> kidnappedPawns = faction.kidnapped.KidnappedPawnsListForReading;
@@ -161,60 +136,89 @@ namespace CrocamedelianExaction
             }
         }
 
+        private static void ReturnOrKeepPawn(Pawn pawn, Faction faction)
+        {
+            //faction.kidnapped.KidnappedPawnsListForReading.Remove(pawn);
+
+            if (Rand.Chance(CrE_GameComponent.Settings.CrE_ExtortLossChance))
+            {
+                CrE_PiratePawn_NoReturn.Initialize(pawn);
+                CrE_PiratePawn_NoPawn.Do();
+            }
+            else
+            {
+                CrE_PiratePawn_Return.Initialize(pawn, faction);
+                CrE_PiratePawn_Return.Do();
+            }
+        }
+        private void PerformCheck()
+        {
+            CleanupFactionRaidCooldowns();
+
+            CheckPawnForExtort();
+        }
+
+        private void CheckPawnForExtort()
+        {
+            for (int i = PirateExtortPawn.Count - 1; i >= 0; i--)
+            {
+                var entry = PirateExtortPawn[i];
+                Pawn pawn = entry.Pawn;
+                int returnTime = entry.TargetTick;
+                int expiryTick = entry.TimeoutTick;
+                Faction faction = entry.Faction;
+
+                if (Find.TickManager.TicksGame > returnTime)
+                {
+                    ReturnOrKeepPawn(pawn, faction);
+                    PirateExtortPawn.RemoveAt(i);
+                    continue;
+                }
+
+                if (expiryTick != 0)
+                {
+                    if (Find.TickManager.TicksGame > expiryTick && !Find.WorldPawns.Contains(pawn))
+                    {
+                        CrE_PiratePawn_NoPawn.Initialize(pawn, faction);
+                        CrE_PiratePawn_NoPawn.Do();
+
+                        entry.TimeoutTick = 0;
+                    }
+                    else if (Find.TickManager.TicksGame > expiryTick && Find.WorldPawns.Contains(pawn))
+                    {
+                        MakePawnSlave(pawn, faction);
+                    }
+
+                    entry.TimeoutTick = 0;
+                }
+
+            }
+        }
+
         private void PerformDailyPawnCheck()
         {
 
-            // Remove the pawn from worldpawns so they wont be used
-            if (CrE_GameComponent.CurrentCrEPawn != null && Find.WorldPawns.Contains(CrE_GameComponent.CurrentCrEPawn))
-            {
-                Find.WorldPawns.RemovePawn(CurrentCrEPawn);
+            //float chance1 = 0.25f + (float)Math.Round(Math.Exp(2 * ((1 / (1 + Mathf.Exp(-0.02f * Mathf.Abs(CrE_GameComponent.CrE_Points)))) - 0.5f)) - 1, 2);
 
-                if (CurrentCrEPawn.gender == Gender.Female && Rand.Chance(Settings.CrE_ExtortPregChance))
-                {
-                    Util.Msg("Tried To Give Preg");
-                    //PregnancyHelper.AddPregnancyHediff(CurrentCrEPawn, CrE_PirateFaction.RandomPawnKind());
-                }
+            //if (CrE_Points >= 10 && Find.TickManager.TicksGame >= CrELoseRelationsCooldown && Rand.Chance(Mathf.Clamp(chance1, 0.0f, 1.0f)))
+            //{
+            //    IncidentParms parms = new IncidentParms
+            //    {
+            //        target = Find.AnyPlayerHomeMap
+            //    };
 
-            }
+            //    IncidentDef def = IncidentDef.Named("CrE_FactionRelationsDeterioration");
+            //    def.Worker.TryExecute(parms);
 
-            if (Find.TickManager.TicksGame >= CrE_GameComponent.CrE_Pawn_Return_Time && CrE_GameComponent.CrE_Pawn_Return_Time != -1 && CrE_GameComponent.CurrentCrEPawn != null)
-            {
-                // All these actions will set the timer back down
-                CrE_GameComponent.CrE_Pawn_Return_Time = -1;
+            //    Util.Msg(CrELoseRelationsCooldown);
+            //}
 
-                if (Rand.Chance(Settings.CrE_ExtortLossChance))
-                {
-                    CrE_PiratePawn_NoReturn.Do();
-                }
-                else
-                {
-                    CrE_PiratePawn_Return.Do();
-                }
+            //GetRandomPrisoner();
 
-                return;
-            }
-
-            float chance1 = 0.25f + (float)Math.Round(Math.Exp(2 * ((1 / (1 + Mathf.Exp(-0.02f * Mathf.Abs(CrE_GameComponent.CrE_Points)))) - 0.5f)) - 1, 2);
-
-            if (CrE_Points >= 10 && Find.TickManager.TicksGame >= CrELoseRelationsCooldown && Rand.Chance(Mathf.Clamp(chance1, 0.0f, 1.0f)))
-            {
-                IncidentParms parms = new IncidentParms
-                {
-                    target = Find.AnyPlayerHomeMap
-                };
-
-                IncidentDef def = IncidentDef.Named("CrE_FactionRelationsDeterioration");
-                def.Worker.TryExecute(parms);
-
-                Util.Msg(CrELoseRelationsCooldown);
-            }
-
-            GetRandomPrisoner();
-
-            if (Settings.CrE_PrisonerRescue && CrE_NextPrisonRescueTIme > 0 && Find.TickManager.TicksGame >= CrE_NextPrisonRescueTIme && CrE_GameComponent.GetRandomPrisoner() != null)
-            {
-                IncidentCrPrisonerRescue.Do();
-            }
+            //if (Settings.CrE_PrisonerRescue && CrE_NextPrisonRescueTIme > 0 && Find.TickManager.TicksGame >= CrE_NextPrisonRescueTIme && CrE_GameComponent.GetRandomPrisoner() != null)
+            //{
+            //    IncidentCrPrisonerRescue.Do();
+            //}
 
         }
 
@@ -222,38 +226,6 @@ namespace CrocamedelianExaction
         public static void ChangeCrEPoints(int points)
         {
             CrE_GameComponent.CrE_Points += points; // Just use negative numbers for decrease
-        }
-
-        //public static List<Pawn> CapturedPawnsQue = new List<Pawn>();
-        public static int CrE_Pawn_Return_Time = -1; // Time to return
-        public static Pawn CurrentCrEPawn = null;
-        public static Faction CrE_PirateFaction = null;
-
-        public static int CrE_Points; // CrE Points
-
-        public static int CrELoseRelationsCooldown; // Cooldown for the lose relationship
-
-        public static int CrE_NextPrisonRescueTIme = -1;
-
-        public static List<Pawn> CapturedPawnsQueue = new List<Pawn>();
-
-        
-
-        public static Pawn GetRandomPawnForEvent()
-        {
-            List<Pawn> allPawns = PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_Colonists.ToList();
-
-            // Filter based on settings
-            IEnumerable<Pawn> validPawns = allPawns.Where(pawn =>
-                (Settings.CrE_Male || pawn.gender != Gender.Male)
-             && (Settings.CrE_Female || pawn.gender != Gender.Female));
-
-            if (!validPawns.Any())
-            {
-                return null;
-            }
-
-            return validPawns.RandomElement();
         }
 
         // MapLoader
@@ -289,43 +261,8 @@ namespace CrocamedelianExaction
             escortPawn.Destroy(DestroyMode.Vanish);
         }
 
-
-        public static void GetNextPrisonerTime(bool forced = false)
-        {
-            if (GetRandomPrisoner() != null)
-            {
-                if (CrE_NextPrisonRescueTIme == -1 || (Find.TickManager.TicksGame >= CrE_NextPrisonRescueTIme && CrE_NextPrisonRescueTIme >= 0))
-                {
-                    int minDays = Settings.CrE_minDaysBetweenRescue * 60000;
-                    int maxDays = Settings.CrE_maxDaysBetweenRescue * 60000;
-
-                    CrE_NextPrisonRescueTIme = Find.TickManager.TicksGame + UnityEngine.Random.Range(minDays, maxDays);
-                }
-
-                if (forced)
-                {
-                    CrE_NextPrisonRescueTIme = Find.TickManager.TicksGame + (Settings.CrE_forceRescueDays * 60000);
-                }
-
-                return;
-            }
-
-            CrE_NextPrisonRescueTIme = -1;
-        }
-
         public static Pawn GetRandomPrisoner()
         {
-            if (CapturedPawnsQueue != null && CapturedPawnsQueue.Count > 0)
-            {
-                Pawn pawnFromQueue = CapturedPawnsQueue.Where(p => !p.Dead).RandomElement();
-
-                if (pawnFromQueue != null)
-                {
-                    CapturedPawnsQueue.Remove(pawnFromQueue);
-                    return pawnFromQueue;
-                }
-            }
-
             List<Pawn> kidnappedPawns = new List<Pawn>();
 
             foreach (Faction faction in Find.FactionManager.AllFactions)
@@ -415,21 +352,23 @@ namespace CrocamedelianExaction
             base.ExposeData();
 
             Scribe_Values.Look<int>(ref CrE_Points, "CrE_Points", 0, true);
-            Scribe_Values.Look<int>(ref CrELoseRelationsCooldown, "CrELoseRelationsCooldown", 0, true);
-
-            //Scribe_Collections.Look<Pawn>(ref CrE_GameComponent.CapturedPawnsQue, "CapturedPawnsQue", LookMode.Deep, Array.Empty<object>());
-            Scribe_References.Look(ref CurrentCrEPawn, "CurrentCrEPawn");
-            Scribe_Values.Look<int>(ref CrE_Pawn_Return_Time, "CrE_Pawn_Return_Time", -1, true);
-            Scribe_References.Look(ref CrE_PirateFaction, "CrE_PirateFaction");
 
             Scribe_Values.Look<int>(ref CrE_NextPrisonRescueTIme, "CrE_NextPrisonRescueTIme", -1, true);
 
-            Scribe_Collections.Look(ref CapturedPawnsQueue, "CapturedPawnsQueue", LookMode.Reference);
-
-            Scribe_Values.Look<bool>(ref CrE_IsGameEnd, "CrE_IsGameEnd", false, true);
+            Scribe_Collections.Look(ref PirateExtortPawn, "PirateExtortPawn", LookMode.Deep);
 
         }
 
+        public static int CrE_Points; // CrE Points
+
+        public static int CrELoseRelationsCooldown; // Cooldown for the lose relationship
+
+        public static int CrE_NextPrisonRescueTIme = -1;
+
+        // Pawn, return time, 1 day over, faction captured
+        public static List<PirateExtortPawnData> PirateExtortPawn = new List<PirateExtortPawnData>();
+
+        public static Dictionary<Faction, int> FactionRaidCooldowns = new Dictionary<Faction, int>();
     }
 
 

@@ -17,39 +17,86 @@ using rjw;
 
 namespace CrocamedelianExaction
 {
-    public class CrE_PiratePawn_Return : IncidentWorker
+    //Fires a raid if the pawn doesn't leave (player captures victim)
+    public class CrE_PiratePawn_NoPawn : IncidentWorker
     {
+        private static Pawn target;
+        private static Faction faction;
+
+        public static void Initialize(Pawn pawn, Faction extorter)
+        {
+            target = pawn;
+            faction = extorter;
+        }
+
         public static bool Do()
         {
+
+            target.SetFactionDirect(Faction.OfPlayer);
+
+            IncidentDef CrE_PiratePawn_NoPawn = CrE_DefOf.CrE_PiratePawn_NoPawn;
+            TaggedString taggedString = GrammarResolverSimpleStringExtensions.Formatted(
+                CrE_PiratePawn_NoPawn.letterLabel,
+                new NamedArgument(faction, "FACTION")
+            );
+
+            TaggedString taggedString2 = GrammarResolverSimpleStringExtensions.Formatted(CrE_PiratePawn_NoPawn.letterText, NamedArgumentUtility.Named(target, "PAWN")).AdjustedFor(target, "PAWN", true);
+
+            Find.LetterStack.ReceiveLetter(taggedString, taggedString2, CrE_PiratePawn_NoPawn.letterDef, new LookTargets(target), null, null, null, null, 0, true);
+
+
+            var incidentParms =
+                            StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, Find.AnyPlayerHomeMap);
+            incidentParms.forced = true;
+            incidentParms.faction = faction;
+            incidentParms.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
+            incidentParms.raidArrivalMode = PawnsArrivalModeDefOf.EdgeWalkIn;
+            incidentParms.target = Find.AnyPlayerHomeMap;
+
+            IncidentDefOf.RaidEnemy.Worker.TryExecute(incidentParms);
+
+            return true;
+        }
+    }
+
+    // Returns the pawn from extortion
+    public class CrE_PiratePawn_Return : IncidentWorker
+    {
+        private static Pawn target;
+        private static Faction faction;
+
+        public static void Initialize(Pawn pawn, Faction f)
+        {
+            target = pawn;
+            faction = f;
+        }
+        public static bool Do()
+        {
+            faction.kidnapped.KidnappedPawnsListForReading.Remove(target);
+
             Map randomPlayerHomeMap = Current.Game.RandomPlayerHomeMap;
             IntVec3 intVec;
             if (!CrE_PiratePawn_Return.TryFindEntryCell(randomPlayerHomeMap, out intVec))
             {
                 return false;
             }
-            Pawn pawn = CrE_GameComponent.CurrentCrEPawn;
-            if (pawn == null)
-            {
-                return false;
-            }
-            pawn.SetFactionDirect(Faction.OfPlayer);
+
+            target.SetFactionDirect(Faction.OfPlayer);
 
             float brokenSeverityGain = Rand.Range(0.3f, 0.7f);
-            pawn.needs.mood.thoughts.memories.TryGainMemory(xxx.got_raped);
-            pawn.health.AddHediff(xxx.feelingBroken, null, null, null);
-            pawn.health.hediffSet.GetFirstHediffOfDef(xxx.feelingBroken).Severity += brokenSeverityGain;
-            pawn.needs.mood.thoughts.memories.TryGainMemory(CrE_DefOf.FeelingBroken);
+            target.needs.mood.thoughts.memories.TryGainMemory(xxx.got_raped);
+            target.health.AddHediff(xxx.feelingBroken, null, null, null);
+            target.health.hediffSet.GetFirstHediffOfDef(xxx.feelingBroken).Severity += brokenSeverityGain;
 
             var thoughtDef = ThoughtDef.Named("PirateForceWork");
-            pawn.needs.mood.thoughts.memories.TryGainMemory(thoughtDef);
+            target.needs.mood.thoughts.memories.TryGainMemory(thoughtDef);
 
-            GenSpawn.Spawn(pawn, intVec, randomPlayerHomeMap, 0);
+            GenSpawn.Spawn(target, intVec, randomPlayerHomeMap, 0);
             IncidentDef CrE_PawnReturn = CrE_DefOf.CrE_PiratePawn_Return;
-            TaggedString taggedString = GrammarResolverSimpleStringExtensions.Formatted(CrE_PawnReturn.letterLabel, NamedArgumentUtility.Named(pawn, "PAWN")).AdjustedFor(pawn, "PAWN", true);
-            TaggedString taggedString2 = GrammarResolverSimpleStringExtensions.Formatted(CrE_PawnReturn.letterText, NamedArgumentUtility.Named(pawn, "PAWN")).AdjustedFor(pawn, "PAWN", true);
-            Find.LetterStack.ReceiveLetter(taggedString, taggedString2, CrE_PawnReturn.letterDef, new LookTargets(pawn), null, null, null, null, 0, true);
+            TaggedString taggedString = GrammarResolverSimpleStringExtensions.Formatted(CrE_PawnReturn.letterLabel, NamedArgumentUtility.Named(target, "PAWN")).AdjustedFor(target, "PAWN", true);
+            TaggedString taggedString2 = GrammarResolverSimpleStringExtensions.Formatted(CrE_PawnReturn.letterText, NamedArgumentUtility.Named(target, "PAWN")).AdjustedFor(target, "PAWN", true);
+            Find.LetterStack.ReceiveLetter(taggedString, taggedString2, CrE_PawnReturn.letterDef, new LookTargets(target), null, null, null, null, 0, true);
 
-            CrE_GameComponent.CurrentCrEPawn = null;
             return true;
         }
 
@@ -62,25 +109,17 @@ namespace CrocamedelianExaction
     // Not returned
     public class CrE_PiratePawn_NoReturn : IncidentWorker
     {
+        private static Pawn target;
+
+        public static void Initialize(Pawn pawn)
+        {
+            target = pawn;
+        }
         public static bool Do()
         {
-            Pawn pawn = CrE_GameComponent.CurrentCrEPawn;
-            if (pawn == null)
-            {
-                return false;
-            }
-            //CrE_GameComponent.CapturedPawnsQue.Add(pawn);
-            CrE_GameComponent.MakePawnSlave(pawn);
-
-            if (CrE_GameComponent.Settings.CrE_forceRescue)
-            {
-                CrE_GameComponent.CapturedPawnsQueue.Add(pawn);
-                CrE_GameComponent.GetNextPrisonerTime(true);
-            }
 
             foreach (Pawn colonist in PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_Colonists)
             {
-
                 if (colonist.needs?.mood?.thoughts != null)
                 {
                     var thoughtDef = ThoughtDef.Named("PirateNoReturn");
@@ -89,11 +128,10 @@ namespace CrocamedelianExaction
             }
 
             IncidentDef CrE_PawnReturn = CrE_DefOf.CrE_PiratePawn_NoReturn;
-            TaggedString taggedString = GrammarResolverSimpleStringExtensions.Formatted(CrE_PawnReturn.letterLabel, NamedArgumentUtility.Named(pawn, "PAWN")).AdjustedFor(pawn, "PAWN", true);
-            TaggedString taggedString2 = GrammarResolverSimpleStringExtensions.Formatted(CrE_PawnReturn.letterText, NamedArgumentUtility.Named(pawn, "PAWN")).AdjustedFor(pawn, "PAWN", true);
-            Find.LetterStack.ReceiveLetter(taggedString, taggedString2, CrE_PawnReturn.letterDef, new LookTargets(pawn), null, null, null, null, 0, true);
+            TaggedString taggedString = GrammarResolverSimpleStringExtensions.Formatted(CrE_PawnReturn.letterLabel, NamedArgumentUtility.Named(target, "PAWN")).AdjustedFor(target, "PAWN", true);
+            TaggedString taggedString2 = GrammarResolverSimpleStringExtensions.Formatted(CrE_PawnReturn.letterText, NamedArgumentUtility.Named(target, "PAWN")).AdjustedFor(target, "PAWN", true);
+            Find.LetterStack.ReceiveLetter(taggedString, taggedString2, CrE_PawnReturn.letterDef, new LookTargets(target), null, null, null, null, 0, true);
 
-            CrE_GameComponent.CurrentCrEPawn = null;
             return true;
         }
 

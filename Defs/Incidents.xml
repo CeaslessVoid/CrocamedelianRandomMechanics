@@ -13,7 +13,19 @@
     <baseChance>9999999</baseChance>
     <earliestDay>0</earliestDay>
     <minRefireDays>30</minRefireDays>
-    <letterDef>NegativeEvent</letterDef>
+  </IncidentDef>
+
+  <IncidentDef>
+    <defName>CrE_PiratePawn_NoPawn</defName>
+    <label>CrE Pirate No Pawn</label>
+    <category>Misc</category>
+    <targetTags>
+      <li>Map_PlayerHome</li>
+    </targetTags>
+    <workerClass>CrocamedelianExaction.CrE_PiratePawn_NoPawn</workerClass>
+    <letterLabel>{FACTION_name} angered</letterLabel>
+    <letterText>As {PAWN_nameDef} has not been sent, they have decided to send a raid.</letterText>
+	<letterDef>NegativeEvent</letterDef>
   </IncidentDef>
 
   <IncidentDef>
@@ -42,7 +54,7 @@
 	<letterDef>NegativeEvent</letterDef>
   </IncidentDef>
 
-  <IncidentDef>
+  <!-- <IncidentDef>
     <defName>CrE_FactionRelationsDeterioration</defName>
     <category>Misc</category>
     <workerClass>CrocamedelianExaction.IncidentWorker_FactionRelationsDeterioration</workerClass>
@@ -64,21 +76,6 @@
     <targetTags>
       <li>Map_PlayerHome</li>
     </targetTags>
-  </IncidentDef>
-
-
-  <!-- <IncidentDef>
-  <defName>CrE_SquatterArrival</defName>
-  <workerClass>CrocamedelianExaction.IncidentWorker_CrESquatterArrival</workerClass>
-  <category>Misc</category>
-  <letterText>A squatter has arrived at your colony and they refuse to leave. They are not interested in participating in work. They'll enjoy your colony's resources until they decide to leave.</letterText>
-  <letterLabel>Squatter Arrival</letterLabel>
-  <letterDef>NegativeEvent</letterDef>
-  <targetTags>
-    <li>Map_PlayerHome</li>
-  </targetTags>
-  <baseChance>0.1</baseChance>
-  <minRefireDays>50</minRefireDays> -->
-<!-- </IncidentDef> -->
+  </IncidentDef> -->
 
 </Defs>

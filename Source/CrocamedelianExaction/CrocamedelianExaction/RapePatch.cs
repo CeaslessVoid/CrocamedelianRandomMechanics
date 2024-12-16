@@ -12,27 +12,27 @@ using Verse;
 
 namespace CrocamedelianExaction
 {
-    [HarmonyPatch(typeof(AfterSexUtility), "UpdateRecordsInitiator")]
-    public static class Patch_UpdateRecordsInitiatorRapeTattoo
-    {
-        public static void Prefix(SexProps props)
-        {
-            Pawn pawn = props.pawn;
-            Pawn partner = props.partner;
+    //[HarmonyPatch(typeof(AfterSexUtility), "UpdateRecordsInitiator")]
+    //public static class Patch_UpdateRecordsInitiatorRapeTattoo
+    //{
+    //    public static void Prefix(SexProps props)
+    //    {
+    //        Pawn pawn = props.pawn;
+    //        Pawn partner = props.partner;
 
-            if (!CrE_GameComponent.Settings.CrE_RapeTats)
-            {
-                return;
-            }
+    //        if (!CrE_GameComponent.Settings.CrE_RapeTats)
+    //        {
+    //            return;
+    //        }
 
-            if (props.isRape && xxx.is_human(pawn))
-            {
-                if ((CrE_GameComponent.Settings.CrE_RapeTatsColonist && pawn.IsColonist) || (CrE_GameComponent.Settings.CrE_RapeTatsOthers && !pawn.IsColonist))
-                {
-                    CrE_GameComponent.RapeTattoo(partner);
-                }
+    //        if (props.isRape && xxx.is_human(pawn))
+    //        {
+    //            if ((CrE_GameComponent.Settings.CrE_RapeTatsColonist && pawn.IsColonist) || (CrE_GameComponent.Settings.CrE_RapeTatsOthers && !pawn.IsColonist))
+    //            {
+    //                CrE_GameComponent.RapeTattoo(partner);
+    //            }
                 
-            }
-        }
-    }
+    //        }
+    //    }
+    //}
 }

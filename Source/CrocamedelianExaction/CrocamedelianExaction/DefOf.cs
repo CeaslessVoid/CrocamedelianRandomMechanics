@@ -18,13 +18,9 @@ namespace CrocamedelianExaction
         public static IncidentDef CrE_PiratePawn_Return;
         public static IncidentDef CrE_PiratePawn_NoReturn;
 
+        public static IncidentDef CrE_PiratePawn_NoPawn;
+
         public static ThoughtDef  FeelingBroken;
-
-        //public static Need        Respect;
-        //public static StatDef     RespectModifier;
-
-        //public static ThoughtDef LowerRespectThought;
-        //public static ThoughtDef HigherRespectThought;
 
         static CrE_DefOf()
         {

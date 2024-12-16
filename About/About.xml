@@ -20,9 +20,8 @@
 	</modDependencies>
 	<loadAfter>
 		<li>brrainz.harmony</li>
-		<li>mlie.morefactioninteraction</li>
 		<li>rim.job.world</li>
 	</loadAfter>
 
-	<description>Adds alot of mechanics to RJW.</description>
+	<description>Adds a lot of mechanics to RJW.</description>
 </ModMetaData>

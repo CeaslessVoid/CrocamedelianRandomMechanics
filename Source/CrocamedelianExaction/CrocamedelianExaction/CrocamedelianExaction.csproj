@@ -61,19 +61,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PirateExtortPawnData.cs" />
     <Compile Include="PrisonerResuce.cs" />
-    <Compile Include="Respect.cs" />
     <Compile Include="PawnAuction.cs" />
     <Compile Include="GameOverPatch.cs" />
-    <Compile Include="UselessSettlers.cs" />
+    <Compile Include="RaidPatch.cs" />
     <Compile Include="RapePatch.cs" />
-    <Compile Include="AAAAAAA.cs" />
     <Compile Include="DefOf.cs" />
     <Compile Include="PawnReturn.cs" />
     <Compile Include="PirateLoseRelations.cs" />
-    <Compile Include="PirateGuests.cs" />
     <Compile Include="PirateExtortion.cs" />
-    <Compile Include="Temp.cs" />
     <Compile Include="ChoiceLetter_ExtortionDemand_Replace.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="Debug.cs" />

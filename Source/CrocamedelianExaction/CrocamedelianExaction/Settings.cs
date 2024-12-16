@@ -33,6 +33,7 @@ namespace CrocamedelianExaction
 
             Scribe_Values.Look<int>  (ref this.CrE_minDaysBetweenEvents,  "CrE_minDaysBetweenEvents", 10, true);
             Scribe_Values.Look<int>  (ref this.CrE_maxDaysBetweenEvents,  "CrE_maxDaysBetweenEvents", 25, true);
+            Scribe_Values.Look<float>(ref this.CrE_pointsMod,             "CrE_pointsMod", 0.2f, true);
 
             Scribe_Values.Look<bool> (ref this.CrE_RapeTats,              "CrE_RapeTats", this.CrE_RapeTats, true);
             Scribe_Values.Look<bool> (ref this.CrE_RapeTatsColonist,      "CrE_RapeTatsColonist", this.CrE_RapeTatsColonist, true);
@@ -73,6 +74,7 @@ namespace CrocamedelianExaction
         // Lose Pawn Days
         public int      CrE_minDaysBetweenEvents =  10;
         public int      CrE_maxDaysBetweenEvents =  25;
+        public float    CrE_pointsMod = 0.2f;
 
         // Lose relations when high points
         public bool     CrE_PirateAffectRelations = true;
@@ -176,6 +178,11 @@ namespace CrocamedelianExaction
                 {
                     this._settings.CrE_minDaysBetweenEvents = this._settings.CrE_maxDaysBetweenEvents - 1;
                 }
+
+                if (this._settings.CrE_minDaysBetweenEvents < 1)
+                {
+                    this._settings.CrE_minDaysBetweenEvents = 1;
+                }
             }
 
             listing_Standard.CheckboxLabeled("Allow Relationship Change", ref this._settings.CrE_PirateAffectRelations);
@@ -225,20 +232,6 @@ namespace CrocamedelianExaction
 
                 }
             }
-
-            //listing_Standard.CheckboxLabeled("Allow Usless Colonist Event", ref this._settings.CrE_Squatters);
-            //listing_Standard.Gap(6f);
-
-            //if (this._settings.CrE_Squatters)
-            //{
-            //    string CrE_SquatterLeaveChance = this._settings.CrE_SquatterLeaveChance.ToString("F2");
-            //    listing_Standard.TextFieldNumericLabeled("Chance Squatters Leave Per Day (x 100)", ref this._settings.CrE_SquatterLeaveChance, ref CrE_SquatterLeaveChance, 0f, 100f);
-            //    this._settings.CrE_SquatterLeaveChance = listing_Standard.Slider(this._settings.CrE_SquatterLeaveChance, 0f, 1f);
-            //    listing_Standard.Gap(12f);
-            //}
-
-            //listing_Standard.CheckboxLabeled("Allow Respect Mechanic (Restart Require, Not finished, Not Working)", ref this._settings.CrE_Respect_Active);
-            //listing_Standard.Gap(6f);
 
             listing_Standard.CheckboxLabeled("Allow Prisoner Rescue Quest", ref this._settings.CrE_PrisonerRescue);
             listing_Standard.Gap(6f);
