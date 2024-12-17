@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+    <Operation Class="PatchOperationInsert">
+		<xpath>Defs/DutyDef[defName = "AssaultColony"]/thinkNode/subNodes/li[@Class="JobGiver_AIFightEnemies"]</xpath>
+		<value>
+			<li Class="CrocamedelianExaction.JobGiver_AIRapePrisoner" />
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationInsert">
+		<xpath>Defs/DutyDef[defName = "DefendBase"]/thinkNode/subNodes/li[@Class="JobGiver_AIDefendPoint"]</xpath>
+		<value>
+			<li Class="CrocamedelianExaction.JobGiver_AIRapePrisoner" />
+		</value>
+	</Operation>
+</Patch>

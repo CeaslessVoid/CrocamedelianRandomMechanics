@@ -65,6 +65,7 @@
     <Compile Include="PrisonerResuce.cs" />
     <Compile Include="PawnAuction.cs" />
     <Compile Include="GameOverPatch.cs" />
+    <Compile Include="QuestHelper.cs" />
     <Compile Include="RaidPatch.cs" />
     <Compile Include="RapePatch.cs" />
     <Compile Include="DefOf.cs" />

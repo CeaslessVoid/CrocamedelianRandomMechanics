@@ -32,8 +32,6 @@ namespace CrocamedelianExaction
         {
             CrE_Points = 0;
 
-            CrE_NextPrisonRescueTIme = -1;
-
             if (PirateExtortPawn == null)
                 PirateExtortPawn = new List<PirateExtortPawnData>();
 
@@ -261,6 +259,37 @@ namespace CrocamedelianExaction
             escortPawn.Destroy(DestroyMode.Vanish);
         }
 
+        public static void OpenQuestMap(Site site)
+        {
+            if (site == null)
+            {
+                Log.Error("Site is null. Cannot open map.");
+                return;
+            }
+
+            Map map = site.Map;
+
+            if (map == null)
+            {
+                int tile = site.Tile;
+                map = GetOrGenerateMapUtility.GetOrGenerateMap(tile, Find.World.info.initialMapSize, WorldObjectDefOf.Settlement);
+
+                if (map == null)
+                {
+                    Log.Error("Failed to generate map for site.");
+                    return;
+                }
+            }
+
+            Current.Game.CurrentMap = map;
+
+            IntVec3 center = map.Center;
+            CameraJumper.TryJump(center, map);
+
+            Messages.Message("Map opened for the quest site.", MessageTypeDefOf.PositiveEvent, false);
+        }
+
+
         public static Pawn GetRandomPrisoner()
         {
             List<Pawn> kidnappedPawns = new List<Pawn>();
@@ -353,8 +382,6 @@ namespace CrocamedelianExaction
 
             Scribe_Values.Look<int>(ref CrE_Points, "CrE_Points", 0, true);
 
-            Scribe_Values.Look<int>(ref CrE_NextPrisonRescueTIme, "CrE_NextPrisonRescueTIme", -1, true);
-
             Scribe_Collections.Look(ref PirateExtortPawn, "PirateExtortPawn", LookMode.Deep);
 
         }
@@ -362,8 +389,6 @@ namespace CrocamedelianExaction
         public static int CrE_Points; // CrE Points
 
         public static int CrELoseRelationsCooldown; // Cooldown for the lose relationship
-
-        public static int CrE_NextPrisonRescueTIme = -1;
 
         // Pawn, return time, 1 day over, faction captured
         public static List<PirateExtortPawnData> PirateExtortPawn = new List<PirateExtortPawnData>();

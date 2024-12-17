@@ -54,16 +54,6 @@ namespace CrocamedelianExaction
             
         }
 
-        [DebugAction(null, null, false, false, false, false, 0, false, category = "Crocamedelian Random Mechanics", name = "Print Resuce Time", requiresRoyalty = false, requiresIdeology = false, requiresBiotech = false, actionType = 0, allowedGameStates = LudeonTK.AllowedGameStates.Playing)]
-        private static void PrintRescueTime() // Prints current CrE points
-        {
-
-            Util.Msg(CrE_GameComponent.CrE_NextPrisonRescueTIme);
-            Util.Msg("Ticks Left");
-            Util.Msg(Find.TickManager.TicksGame - CrE_GameComponent.CrE_NextPrisonRescueTIme);
-
-        }
-
         private const string CATEGORY = "Crocamedelian Random Mechanics";
     }
 }

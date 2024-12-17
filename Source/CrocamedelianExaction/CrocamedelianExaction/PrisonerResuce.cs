@@ -13,12 +13,15 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using Verse.Grammar;
+using UnityEngine.Diagnostics;
+using System.Collections;
+using Verse.Noise;
 
 namespace CrocamedelianExaction
 {
     public class SitePartWorker_CrEPrisonerRescue : SitePartWorker_PrisonerWillingToJoin
     {
-        public static Map CrE_TempMap = null;
+        public static Site site = null;
 
         public static class IncidentCrPrisonerRescue
         {
@@ -30,7 +33,32 @@ namespace CrocamedelianExaction
                 QuestScriptDef named = DefDatabase<QuestScriptDef>.GetNamed("CrE_PrisonerRescue", true);
                 float num = StorytellerUtility.DefaultThreatPointsNow(Current.Game.AnyPlayerHomeMap);
 
-                QuestUtility.SendLetterQuestAvailable(QuestUtility.GenerateQuestAndMakeAvailable(named, num));
+
+                Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(named, num);
+
+                QuestUtility.SendLetterQuestAvailable(quest);
+
+                if (site != null)
+                {
+                    Map map = GetOrGenerateMapUtility.GetOrGenerateMap(
+                        site.Tile,
+                        Find.World.info.initialMapSize,
+                        null
+                    );
+
+                    if (map != null)
+                    {
+                        Current.Game.CurrentMap = map;
+
+                        CameraJumper.TryJump(map.Center, map);
+
+                        Messages.Message("Map has been opened for the quest.", MessageTypeDefOf.PositiveEvent, false);
+                    }
+                    else
+                    {
+                        Util.Error("Failed to generate or load the map for the quest site.");
+                    }
+                }
 
                 return true;
             }
@@ -48,20 +76,16 @@ namespace CrocamedelianExaction
 
             Util.SitePartWorker_Base_Notify_GeneratedByQuestGen(part, outExtraDescriptionRules, outExtraDescriptionConstants);
             Pawn randomPawnForSpawning = CrE_GameComponent.GetRandomPrisoner();
-            if (randomPawnForSpawning == null)
-                return;
 
             //CrE_GameComponent.RemovePawnWorld(randomPawnForSpawning);
 
-            randomPawnForSpawning.health.AddHediff(xxx.feelingBroken, null, null, null);
-            float brokenSeverityGain = Rand.Range(0.5f, 0.8f);
-            randomPawnForSpawning.health.hediffSet.GetFirstHediffOfDef(xxx.feelingBroken).Severity += brokenSeverityGain;
-
-            randomPawnForSpawning.needs.mood.thoughts.memories.TryGainMemory(xxx.got_raped);
-
+            //randomPawnForSpawning.health.AddHediff(xxx.feelingBroken, null, null, null);
+            //float brokenSeverityGain = Rand.Range(0.5f, 0.8f);
+            //randomPawnForSpawning.health.hediffSet.GetFirstHediffOfDef(xxx.feelingBroken).Severity += brokenSeverityGain;
+            //randomPawnForSpawning.needs.mood.thoughts.memories.TryGainMemory(xxx.got_raped);
             randomPawnForSpawning.guest.SetGuestStatus(part.site.Faction, RimWorld.GuestStatus.Prisoner);
 
-            Util.DressPawnIfCold(randomPawnForSpawning, part.site.Tile);
+            //Util.DressPawnIfCold(randomPawnForSpawning, part.site.Tile);
             Util.HealPawn(randomPawnForSpawning);
 
             part.things = new ThingOwner<Pawn>(part, true, Verse.LookMode.Deep);
@@ -83,20 +107,20 @@ namespace CrocamedelianExaction
             }
             outExtraDescriptionRules.Add(new Rule_String("prisonerFullRelationInfo", text2));
 
-            //CrE_TempMap = part.site.Map;
 
+
+
+            site = part.site;
         }
 
         public override void PostMapGenerate(Map map)
         {
             base.PostMapGenerate(map);
-            CrE_GameComponent.CrE_NextPrisonRescueTIme = -2;
         }
 
         public override void PostDestroy(SitePart sitePart)
         {
             base.PostDestroy(sitePart);
-            CrE_GameComponent.CrE_NextPrisonRescueTIme = -1;
         }
     }
 }

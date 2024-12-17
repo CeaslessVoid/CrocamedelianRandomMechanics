@@ -48,8 +48,8 @@ namespace CrocamedelianExaction
             //Scribe_Values.Look<bool> (ref this.CrE_Respect_Active,        "CrE_Respect_Active", this.CrE_Respect_Active, true);
 
             Scribe_Values.Look<bool> (ref this.CrE_PrisonerRescue,        "CrE_PrisonerRescue", this.CrE_PrisonerRescue, true);
-            Scribe_Values.Look<int>(ref this.CrE_minDaysBetweenRescue,    "CrE_minDaysBetweenRescue", 20, true);
-            Scribe_Values.Look<int>(ref this.CrE_maxDaysBetweenRescue,    "CrE_maxDaysBetweenRescue", 50, true);
+            //Scribe_Values.Look<int>(ref this.CrE_minDaysBetweenRescue,    "CrE_minDaysBetweenRescue", 20, true);
+            //Scribe_Values.Look<int>(ref this.CrE_maxDaysBetweenRescue,    "CrE_maxDaysBetweenRescue", 50, true);
 
             Scribe_Values.Look<bool>(ref this.CrE_forceRescue,            "CrE_froceRescue", this.CrE_forceRescue, false);
             Scribe_Values.Look<int>(ref this.CrE_forceRescueDays,         "CrE_forceRescueDays", 5, true);
@@ -96,8 +96,9 @@ namespace CrocamedelianExaction
 
         // Prisoner Rescue Quest
         public bool     CrE_PrisonerRescue =       true;
-        public int      CrE_minDaysBetweenRescue =  20;
-        public int      CrE_maxDaysBetweenRescue =  50;
+
+        //public int      CrE_minDaysBetweenRescue =  20;
+        //public int      CrE_maxDaysBetweenRescue =  50;
 
         // Force Rescue Quest
         public bool     CrE_forceRescue =           true;
@@ -242,20 +243,20 @@ namespace CrocamedelianExaction
                 listing_Standard.Label("Do note that if the kidnapped pawns are used by anything else (e.g. for another event of given to the faction) they will not appear");
                 listing_Standard.Label("Making kidnapped pawns exclusive (so they can only be used by this event) had many issues. Sorry");
 
-                string minDaysRescueText = this._settings.CrE_minDaysBetweenRescue.ToString();
-                listing_Standard.TextFieldNumericLabeled("Minimum Days Between Prisoner Rescue Quest", ref this._settings.CrE_minDaysBetweenRescue, ref minDaysRescueText, 0, 300);
-                this._settings.CrE_minDaysBetweenRescue = Mathf.RoundToInt(listing_Standard.Slider(this._settings.CrE_minDaysBetweenRescue, 0f, 300f));
-                listing_Standard.Gap(8f);
+                //string minDaysRescueText = this._settings.CrE_minDaysBetweenRescue.ToString();
+                //listing_Standard.TextFieldNumericLabeled("Minimum Days Between Prisoner Rescue Quest", ref this._settings.CrE_minDaysBetweenRescue, ref minDaysRescueText, 0, 300);
+                //this._settings.CrE_minDaysBetweenRescue = Mathf.RoundToInt(listing_Standard.Slider(this._settings.CrE_minDaysBetweenRescue, 0f, 300f));
+                //listing_Standard.Gap(8f);
 
-                string maxDaysRescueText = this._settings.CrE_maxDaysBetweenRescue.ToString();
-                listing_Standard.TextFieldNumericLabeled("Maximum Days Between Prisoner Rescue Quest", ref this._settings.CrE_maxDaysBetweenRescue, ref maxDaysRescueText, 1, 300);
-                this._settings.CrE_maxDaysBetweenRescue = Mathf.RoundToInt(listing_Standard.Slider(this._settings.CrE_maxDaysBetweenRescue, 1f, 300f));
-                listing_Standard.Gap(8f);
+                //string maxDaysRescueText = this._settings.CrE_maxDaysBetweenRescue.ToString();
+                //listing_Standard.TextFieldNumericLabeled("Maximum Days Between Prisoner Rescue Quest", ref this._settings.CrE_maxDaysBetweenRescue, ref maxDaysRescueText, 1, 300);
+                //this._settings.CrE_maxDaysBetweenRescue = Mathf.RoundToInt(listing_Standard.Slider(this._settings.CrE_maxDaysBetweenRescue, 1f, 300f));
+                //listing_Standard.Gap(8f);
 
-                if (this._settings.CrE_minDaysBetweenRescue >= this._settings.CrE_maxDaysBetweenRescue)
-                {
-                    this._settings.CrE_minDaysBetweenRescue = this._settings.CrE_maxDaysBetweenRescue - 1;
-                }
+                //if (this._settings.CrE_minDaysBetweenRescue >= this._settings.CrE_maxDaysBetweenRescue)
+                //{
+                //    this._settings.CrE_minDaysBetweenRescue = this._settings.CrE_maxDaysBetweenRescue - 1;
+                //}
 
                 if (this._settings.CrE_PirateExtort)
                 {

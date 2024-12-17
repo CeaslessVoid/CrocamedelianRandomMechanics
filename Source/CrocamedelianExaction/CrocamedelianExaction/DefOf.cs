@@ -20,8 +20,6 @@ namespace CrocamedelianExaction
 
         public static IncidentDef CrE_PiratePawn_NoPawn;
 
-        public static ThoughtDef  FeelingBroken;
-
         static CrE_DefOf()
         {
             DefOfHelper.EnsureInitializedInCtor(typeof(CrE_DefOf));
