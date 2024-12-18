@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <JobDef>
+  <defName>CrE_AdministerDrug</defName>
+  <driverClass>CrocamedelianExaction.JobDriver_AdministerDrug</driverClass>
+  <reportString>administering a drug.</reportString>
+
+  <suspendable>false</suspendable>
+  <checkOverrideOnDamage>Never</checkOverrideOnDamage>
+  </JobDef>
+
+  <JobDef>
+  <defName>CrE_FeedEnemy</defName>
+  <driverClass>CrocamedelianExaction.JobDriver_FeedPrisoner</driverClass>
+  <reportString>feeding prisoner.</reportString>
+
+  <suspendable>false</suspendable>
+  <checkOverrideOnDamage>Never</checkOverrideOnDamage>
+  </JobDef>
+
+  <JobDef>
+  <defName>CrE_AdministerYayo</defName>
+  <driverClass>CrocamedelianExaction.JobDriver_AdministerYayo</driverClass>
+  <reportString>feeding prisoner.</reportString>
+
+  <suspendable>false</suspendable>
+  <checkOverrideOnDamage>Never</checkOverrideOnDamage>
+  </JobDef>
+
+  <JobDef>
+  <defName>CrE_ApplyTattoo</defName>
+  <driverClass>CrocamedelianExaction.JobDriver_ApplyTattoo</driverClass>
+  <reportString>feeding prisoner.</reportString>
+
+  <suspendable>false</suspendable>
+  <checkOverrideOnDamage>Never</checkOverrideOnDamage>
+  </JobDef>
+
+</Defs>

@@ -51,8 +51,9 @@
         <li Class="QuestNode_SubScript">
           <def>Util_RandomizePointsChallengeRating</def>
           <parms>
-            <pointsFactorTwoStar>1.5</pointsFactorTwoStar>
-            <pointsFactorThreeStar>2</pointsFactorThreeStar>
+            <pointsFactorOneStar>5</pointsFactorOneStar>
+            <pointsFactorTwoStar>10</pointsFactorTwoStar>
+            <pointsFactorThreeStar>15</pointsFactorThreeStar>
           </parms>
         </li>
         <li Class="QuestNode_SubScript">

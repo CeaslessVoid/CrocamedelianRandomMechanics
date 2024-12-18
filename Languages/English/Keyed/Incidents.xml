@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-    <CrE_PiratePawn_Extort>{1} has grown wary of your recent complacency and now demands a tribute in labor. They insist that {0} be sent to serve under their banner for some time, fulfilling their needs and demonstrating your submissiveness. They give you 1 day. Failure to comply will be met with aggression.</CrE_PiratePawn_Extort>
+    <CrE_PiratePawn_Extort>{1} has grown wary of your recent complacency and now demands a tribute in labor. They insist that {0} be sent to serve under their banner for some time, fulfilling their needs and demonstrating your submissiveness. They give you 3 hours. Failure to comply will be met with aggression.</CrE_PiratePawn_Extort>
     <CrE_PiratePawn_ExtortLabel>Forced Labour Demand</CrE_PiratePawn_ExtortLabel>
 
     <CrE_AcceptedPiratePawn_Extort>Laughter ensues from hearing that. The {1} promise to use {0}, however does not say anything about returning {0} unharmed.</CrE_AcceptedPiratePawn_Extort>
     <CrE_MoneyPiratePawn_Extort>The silver is enough to satisfy the {1} for now</CrE_MoneyPiratePawn_Extort>
-    <CrE_RejectedPiratePawn_Extort>Clearly the {1} will not have this.</CrE_RejectedPiratePawn_Extort>
+    <CrE_RejectedPiratePawn_Extort>Clearly the {0} will not have this. They are sending a raid.</CrE_RejectedPiratePawn_Extort>
 
     <CrE_RansomDemand_Accept>Accept</CrE_RansomDemand_Accept>
     <CrE_RansomDemand_Money>Pay Instead {0}</CrE_RansomDemand_Money>
@@ -15,4 +15,14 @@
 
     <CrENewColonyPrisoner>Continue as a lost colonist</CrENewColonyPrisoner>
     <CrENoPrisoners>No colonist or kidnappers found</CrENoPrisoners>
+
+    <LetterLabelNewAddiction>Psychite addiction</LetterLabelNewAddiction>
+    <LetterNewAddiction>{0} has developed an addiction to psychite.
+
+{1} now has a need for psychite, visible in {2} Needs tab. {1} will automatically consume the drug to fulfil {2} need. If {1} cannot get any psychite, {1} will go into withdrawal.
+    </LetterNewAddiction>
+
+    <LetterLabelCrETattoo>Marked</LetterLabelCrETattoo>
+    <LetterCrETattoo>{0} skin was forcefully marked by the {3}. This humiliating and degrading action will immortalize this moment on {2} skin, and hints at the future ownership of {4} as their resistance crumbles.</LetterCrETattoo>
+    
 </LanguageData>

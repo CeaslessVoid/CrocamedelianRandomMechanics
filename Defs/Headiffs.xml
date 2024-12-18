@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <HediffDef>
+		<defName>CrE_Hediff_RapeEnemyCD</defName>
+		<label>rape enemy cooldown</label>
+		<description>"Who's next?"</description>
+		<hediffClass>HediffWithComps</hediffClass>
+		<defaultLabelColor>(1, 0.41, 0.81)</defaultLabelColor>
+		<initialSeverity>1.0</initialSeverity>
+		<minSeverity>1.0</minSeverity>
+		<maxSeverity>1.0</maxSeverity>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_Disappears">
+				<disappearsAfterTicks>
+					<min>7500</min>
+					<max>15000</max>
+				</disappearsAfterTicks>
+			</li>
+		</comps>
+		<stages>
+			<li>
+				<becomeVisible>false</becomeVisible>
+			</li>
+		</stages>
+	</HediffDef>
+
+	<HediffDef>
+		<defName>CrE_Hediff_DrugEnemyCD</defName>
+		<label>Drug enemy cooldown</label>
+		<description>"Fuck it"</description>
+		<hediffClass>HediffWithComps</hediffClass>
+		<defaultLabelColor>(1, 0.41, 0.81)</defaultLabelColor>
+		<initialSeverity>1.0</initialSeverity>
+		<minSeverity>1.0</minSeverity>
+		<maxSeverity>1.0</maxSeverity>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_Disappears">
+				<disappearsAfterTicks>
+					<min>7500</min>
+					<max>15000</max>
+				</disappearsAfterTicks>
+			</li>
+		</comps>
+		<stages>
+			<li>
+				<becomeVisible>false</becomeVisible>
+			</li>
+		</stages>
+	</HediffDef>
+
+	<HediffDef>
+		<defName>CrE_Hediff_FeedEnemyCD</defName>
+		<label>Feed enemy cooldown</label>
+		<description>"Fuck it"</description>
+		<hediffClass>HediffWithComps</hediffClass>
+		<defaultLabelColor>(1, 0.41, 0.81)</defaultLabelColor>
+		<initialSeverity>1.0</initialSeverity>
+		<minSeverity>1.0</minSeverity>
+		<maxSeverity>1.0</maxSeverity>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_Disappears">
+				<disappearsAfterTicks>
+					<min>30000</min>
+					<max>45000</max>
+				</disappearsAfterTicks>
+			</li>
+		</comps>
+		<stages>
+			<li>
+				<becomeVisible>false</becomeVisible>
+			</li>
+		</stages>
+	</HediffDef>
+
+	<HediffDef>
+		<defName>CrE_Hediff_LastOneISwear</defName>
+		<label>Last Cooldown I Swear</label>
+		<description>"Fuck it"</description>
+		<hediffClass>HediffWithComps</hediffClass>
+		<defaultLabelColor>(1, 0.41, 0.81)</defaultLabelColor>
+		<initialSeverity>1.0</initialSeverity>
+		<minSeverity>1.0</minSeverity>
+		<maxSeverity>1.0</maxSeverity>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_Disappears">
+				<disappearsAfterTicks>
+					<min>900000</min>
+					<max>900000</max>
+				</disappearsAfterTicks>
+			</li>
+		</comps>
+		<stages>
+			<li>
+				<becomeVisible>false</becomeVisible>
+			</li>
+		</stages>
+	</HediffDef>
+</Defs>

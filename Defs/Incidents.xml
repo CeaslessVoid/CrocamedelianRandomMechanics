@@ -10,9 +10,9 @@
     <workerClass>CrocamedelianExaction.IncidentWorker_CrEPiratePawnExtort</workerClass>
     <letterLabel>Pirate Demand</letterLabel>
     <letterDef>CrE_PiratePawn_Extort_Letter</letterDef>
-    <baseChance>9999999</baseChance>
+    <baseChance>15</baseChance>
     <earliestDay>0</earliestDay>
-    <minRefireDays>30</minRefireDays>
+    <minRefireDays>15</minRefireDays>
   </IncidentDef>
 
   <IncidentDef>

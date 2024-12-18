@@ -20,6 +20,10 @@ namespace CrocamedelianExaction
 
         public static IncidentDef CrE_PiratePawn_NoPawn;
 
+        public static JobDef      CrE_AdministerDrug;
+        public static JobDef      CrE_FeedEnemy;
+        public static JobDef      CrE_AdministerYayo;
+        public static JobDef      CrE_ApplyTattoo;
         static CrE_DefOf()
         {
             DefOfHelper.EnsureInitializedInCtor(typeof(CrE_DefOf));

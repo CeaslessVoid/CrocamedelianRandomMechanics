@@ -40,10 +40,10 @@ namespace CrocamedelianExaction
 
                 if (site != null)
                 {
-                    Map map = GetOrGenerateMapUtility.GetOrGenerateMap(
+                    Map map = MapGen.GetOrGenerateMap(
                         site.Tile,
                         Find.World.info.initialMapSize,
-                        null
+                        WorldObjectDefOf.Settlement
                     );
 
                     if (map != null)
@@ -52,7 +52,6 @@ namespace CrocamedelianExaction
 
                         CameraJumper.TryJump(map.Center, map);
 
-                        Messages.Message("Map has been opened for the quest.", MessageTypeDefOf.PositiveEvent, false);
                     }
                     else
                     {
@@ -85,7 +84,7 @@ namespace CrocamedelianExaction
             //randomPawnForSpawning.needs.mood.thoughts.memories.TryGainMemory(xxx.got_raped);
             randomPawnForSpawning.guest.SetGuestStatus(part.site.Faction, RimWorld.GuestStatus.Prisoner);
 
-            //Util.DressPawnIfCold(randomPawnForSpawning, part.site.Tile);
+            Util.DressPawnIfCold(randomPawnForSpawning, part.site.Tile);
             Util.HealPawn(randomPawnForSpawning);
 
             part.things = new ThingOwner<Pawn>(part, true, Verse.LookMode.Deep);
@@ -106,9 +105,6 @@ namespace CrocamedelianExaction
                 text2 = "";
             }
             outExtraDescriptionRules.Add(new Rule_String("prisonerFullRelationInfo", text2));
-
-
-
 
             site = part.site;
         }

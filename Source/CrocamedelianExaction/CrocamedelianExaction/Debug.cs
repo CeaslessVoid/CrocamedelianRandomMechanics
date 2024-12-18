@@ -28,6 +28,15 @@ namespace CrocamedelianExaction
             PrintCrEPoints();
         }
 
+        [DebugAction(null, null, false, false, false, false, 0, false, category = "Crocamedelian Random Mechanics", name = "Print Captured Pawns Available", requiresRoyalty = false, requiresIdeology = false, requiresBiotech = false, actionType = 0, allowedGameStates = LudeonTK.AllowedGameStates.Playing)]
+        private static void PrintPossiblePrisoners() // Prints current CrE points
+        {
+            for (int i = 0; i < CrE_GameComponent.CrECapturePawns.Count; i++)
+            {
+                Log.Message(CrE_GameComponent.CrECapturePawns[i]);
+            }
+        }
+
         [DebugAction(null, null, false, false, false, false, 0, false, category = "Crocamedelian Random Mechanics", name = "Print Extorted Pawn List", requiresRoyalty = false, requiresIdeology = false, requiresBiotech = false, actionType = 0, allowedGameStates = LudeonTK.AllowedGameStates.Playing)]
         private static void PrintCurrentVictim() // Prints current CrE vicitim pawn
         {
@@ -37,12 +46,6 @@ namespace CrocamedelianExaction
             }
         }
 
-        [DebugAction(null, null, false, false, false, false, 0, false, category = "Crocamedelian Random Mechanics", name = "Send all kidnapped to kidnapper faction", requiresRoyalty = false, requiresIdeology = false, requiresBiotech = false, actionType = 0, allowedGameStates = LudeonTK.AllowedGameStates.Playing)]
-        private static void ToFactionKidnapped() // Prints current CrE points
-        {
-            CrE_GameComponent.TransferCapturedPawnsToWorldPawns();
-        }
-
         [DebugAction(null, null, false, false, false, false, 0, false, category = "Crocamedelian Random Mechanics", name = "Do Prisoner Rescue Event", requiresRoyalty = false, requiresIdeology = false, requiresBiotech = false, actionType = 0, allowedGameStates = LudeonTK.AllowedGameStates.Playing)]
         private static void DoPrisonerRescueEvent() // Prints current CrE points
         {
@@ -50,6 +53,10 @@ namespace CrocamedelianExaction
             if (CrE_GameComponent.GetRandomPrisoner() != null)
             {
                 IncidentCrPrisonerRescue.Do();
+            }
+            else
+            {
+                Util.Warn("No avaiable prisoner");
             }
             
         }

@@ -21,9 +21,13 @@ namespace CrocamedelianExaction
         private Pawn victim;
         private Faction faction;
 
-        public float chance_modifier = (float)Math.Round(Math.Exp(2 * ((1 / (1 + Mathf.Exp(-0.02f * CrE_GameComponent.CrE_Points))) - 0.5f)) - 1,2);
-        public override float BaseChanceThisGame => Math.Max(0.01f,
-            Mathf.Clamp(base.BaseChanceThisGame - StorytellerUtilityPopulation.PopulationIntent + chance_modifier, 0.0f, 1.0f));
+        public float chance_modifier = (float)Math.Round(Math.Exp(2 * ((1 / (1 + Mathf.Exp (-0.02f * CrE_GameComponent.CrE_Points) ) ) - 0.5f)) - 1,2);
+
+        //   \left(e^{2\left(\frac{1}{1+e^{-0.02\cdot x}}-0.5\right)}-1\right)
+
+        public override float BaseChanceThisGame => CrE_GameComponent.Settings.CrE_PirateExtort_BaseChance - StorytellerUtilityPopulation.PopulationIntent + (chance_modifier * CrE_GameComponent.Settings.CrE_pointsMod);
+
+        //public override float BaseChanceThisGame => 9999999;
 
         protected override bool CanFireNowSub(IncidentParms parms)
         {
@@ -182,6 +186,11 @@ namespace CrocamedelianExaction
                             IncidentDefOf.RaidEnemy.Worker.TryExecute(incidentParms);
                         }
                     };
+                    var dialogueNodeReject = new DiaNode("CrE_RejectedPiratePawn_Extort"
+                    .Translate(faction).CapitalizeFirst()
+                    .AdjustedFor(victim));
+                    dialogueNodeReject.options.Add(Option_Close);
+                    reject.link = dialogueNodeReject;
 
                     yield return accept;
                     yield return money;

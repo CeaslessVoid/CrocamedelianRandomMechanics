@@ -37,6 +37,9 @@ namespace CrocamedelianExaction
 
             if (FactionRaidCooldowns == null)
                 FactionRaidCooldowns = new Dictionary<Faction, int>();
+
+            if (CrECapturePawns == null)
+                CrECapturePawns = new List<Pawn>();
         }
 
         public static void InitOnLoad()
@@ -66,14 +69,16 @@ namespace CrocamedelianExaction
             if (FactionRaidCooldowns == null)
                 FactionRaidCooldowns = new Dictionary<Faction, int>();
 
+            if (CrECapturePawns != null)
+                CrECapturePawns = new List<Pawn>();
         }
 
         public override void GameComponentTick() // Every day
         {
             base.GameComponentTick();
 
-            if (GenTicks.IsTickInterval(60000))
-                PerformDailyPawnCheck();
+            if (GenTicks.IsTickInterval(30000))
+                PerformDailyPawnCheck(); // Lies
 
             if (GenTicks.IsTickInterval(3000))
                 PerformCheck();
@@ -116,23 +121,55 @@ namespace CrocamedelianExaction
             Find.GameEnder.CheckOrUpdateGameOver();
         }
 
-        
-
-        public static void TransferCapturedPawnsToWorldPawns()
+        public static void AddCapturedPawn(Pawn pawn)
         {
-            foreach (Faction faction in Find.FactionManager.AllFactionsListForReading)
+            if (pawn != null && !CrECapturePawns.Contains(pawn) && pawn.ageTracker.AgeBiologicalYears >= 18)
             {
-                List<Pawn> kidnappedPawns = faction.kidnapped.KidnappedPawnsListForReading;
-
-                foreach (Pawn pawn in kidnappedPawns.ToList())
-                {
-                    faction.kidnapped.RemoveKidnappedPawn(pawn);
-
-                    pawn.SetFaction(faction);
-
-                }
+                CrECapturePawns.Add(pawn);
             }
         }
+
+         public static void AddAllCapturedPawns()
+         {
+            CrECapturePawns.RemoveAll(pawn => pawn == null || pawn.Dead || pawn.Destroyed);
+
+            List<Pawn> kidnappedPawns = new List<Pawn>();
+
+            foreach (Faction faction in Find.FactionManager.AllFactions)
+            {
+                List<Pawn> factionKidnappedPawns = faction.kidnapped?.KidnappedPawnsListForReading;
+
+                if (factionKidnappedPawns != null && factionKidnappedPawns.Count > 0)
+                {
+                    kidnappedPawns.AddRange(factionKidnappedPawns.Where(pawn => !pawn.Dead));
+                }
+            }
+
+            foreach (Pawn pawn in kidnappedPawns)
+            {
+                if (!CrECapturePawns.Contains(pawn))
+                {
+                    CrECapturePawns.Add(pawn);
+                }
+            }
+
+        }
+
+        //public static void TransferCapturedPawnsToWorldPawns()
+        //{
+        //    foreach (Faction faction in Find.FactionManager.AllFactionsListForReading)
+        //    {
+        //        List<Pawn> kidnappedPawns = faction.kidnapped.KidnappedPawnsListForReading;
+
+        //        foreach (Pawn pawn in kidnappedPawns.ToList())
+        //        {
+        //            faction.kidnapped.RemoveKidnappedPawn(pawn);
+
+        //            pawn.SetFaction(faction);
+
+        //        }
+        //    }
+        //}
 
         private static void ReturnOrKeepPawn(Pawn pawn, Faction faction)
         {
@@ -193,23 +230,10 @@ namespace CrocamedelianExaction
             }
         }
 
-        private void PerformDailyPawnCheck()
+        private void PerformDailyPawnCheck() // Half daily now
         {
 
-            //float chance1 = 0.25f + (float)Math.Round(Math.Exp(2 * ((1 / (1 + Mathf.Exp(-0.02f * Mathf.Abs(CrE_GameComponent.CrE_Points)))) - 0.5f)) - 1, 2);
-
-            //if (CrE_Points >= 10 && Find.TickManager.TicksGame >= CrELoseRelationsCooldown && Rand.Chance(Mathf.Clamp(chance1, 0.0f, 1.0f)))
-            //{
-            //    IncidentParms parms = new IncidentParms
-            //    {
-            //        target = Find.AnyPlayerHomeMap
-            //    };
-
-            //    IncidentDef def = IncidentDef.Named("CrE_FactionRelationsDeterioration");
-            //    def.Worker.TryExecute(parms);
-
-            //    Util.Msg(CrELoseRelationsCooldown);
-            //}
+            AddAllCapturedPawns();
 
             //GetRandomPrisoner();
 
@@ -224,39 +248,6 @@ namespace CrocamedelianExaction
         public static void ChangeCrEPoints(int points)
         {
             CrE_GameComponent.CrE_Points += points; // Just use negative numbers for decrease
-        }
-
-        // MapLoader
-        public static void EnterMapWithTemporaryEscort(Map targetMap)
-        {
-            Pawn escortPawn = PawnGenerator.GeneratePawn(PawnKindDefOf.Colonist, Faction.OfPlayer);
-            List<Pawn> caravanPawns = new List<Pawn> { escortPawn };
-
-            Util.Msg(caravanPawns);
-            Util.Msg(targetMap);
-            Util.Msg(Faction.OfPlayer);
-
-            int randomTile = Find.WorldGrid.tiles.FindIndex(tile => !tile.biome.impassable);
-            if (randomTile < 0)
-            {
-                Util.Msg("Error: No valid world tiles found for caravan creation.");
-                return;
-            }
-
-            Caravan caravan = CaravanMaker.MakeCaravan(caravanPawns, Faction.OfPlayer, randomTile, false);
-
-            if (caravan == null)
-            {
-                Util.Msg("Error: Failed to create caravan.");
-                return;
-            }
-
-            Util.Msg("Caravan Formed");
-
-            //SettlementUtility
-            CaravanEnterMapUtility.Enter(caravan, targetMap, CaravanEnterMode.Edge, CaravanDropInventoryMode.DoNotDrop, draftColonists: true);
-
-            escortPawn.Destroy(DestroyMode.Vanish);
         }
 
         public static void OpenQuestMap(Site site)
@@ -290,27 +281,12 @@ namespace CrocamedelianExaction
         }
 
 
-        public static Pawn GetRandomPrisoner()
+        public static Pawn GetRandomPrisoner() // Kept so that nothing breaks without change much code
         {
-            List<Pawn> kidnappedPawns = new List<Pawn>();
-
-            foreach (Faction faction in Find.FactionManager.AllFactions)
-            {
-                List<Pawn> factionKidnappedPawns = faction.kidnapped.KidnappedPawnsListForReading;
-
-                if (factionKidnappedPawns != null && factionKidnappedPawns.Count > 0)
-                {
-                    kidnappedPawns.AddRange(factionKidnappedPawns.Where(p => !p.Dead));
-                }
-            }
-
-            if (kidnappedPawns.Count == 0)
-            {
-                Util.Msg("No Kidnapped Pawns");
+            if (CrECapturePawns.Count == 0)
                 return null;
-            }
 
-            return kidnappedPawns.RandomElement();
+            return CrECapturePawns.RandomElement();
         }
 
         public static void RemovePawnWorld(Pawn pawn)
@@ -322,7 +298,7 @@ namespace CrocamedelianExaction
         {
             return (Settings.CrE_Male || pawn.gender != Gender.Male)
                 && (Settings.CrE_Female || pawn.gender != Gender.Female)
-                && pawn.ageTracker.AgeBiologicalYears > 19;
+                && pawn.ageTracker.AgeBiologicalYears >= 18;
         }
 
 
@@ -384,6 +360,8 @@ namespace CrocamedelianExaction
 
             Scribe_Collections.Look(ref PirateExtortPawn, "PirateExtortPawn", LookMode.Deep);
 
+            Scribe_Collections.Look(ref CrECapturePawns, "CrECapturePawns", LookMode.Reference);
+
         }
 
         public static int CrE_Points; // CrE Points
@@ -394,6 +372,10 @@ namespace CrocamedelianExaction
         public static List<PirateExtortPawnData> PirateExtortPawn = new List<PirateExtortPawnData>();
 
         public static Dictionary<Faction, int> FactionRaidCooldowns = new Dictionary<Faction, int>();
+
+        public static List<Pawn> CrECapturePawns = new List<Pawn>();
+
+
     }
 
 
