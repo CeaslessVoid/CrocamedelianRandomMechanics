@@ -88,6 +88,23 @@ namespace CrocamedelianExaction
             target.health.AddHediff(xxx.feelingBroken, null, null, null);
             target.health.hediffSet.GetFirstHediffOfDef(xxx.feelingBroken).Severity += brokenSeverityGain;
 
+            if (Rand.Chance(CrE_GameComponent.Settings.CrE_ExtortPregChance) && !target.IsPregnant())
+            {
+                Pawn father = null;
+
+                if (faction.leader != null && faction.leader.gender == Gender.Male && IsValidFather(faction.leader))
+                    father = faction.leader;
+                else
+                    father = FindRandomMaleFromFaction(faction);
+
+                if (father == null)
+                {
+                    Util.Msg($"No valid male father found for faction {faction.Name}. Pregnancy will not be added.");
+                }
+
+                PregnancyHelper.DoImpregnate(father, target);
+            }
+
             var thoughtDef = ThoughtDef.Named("PirateForceWork");
             target.needs.mood.thoughts.memories.TryGainMemory(thoughtDef);
 
@@ -104,16 +121,31 @@ namespace CrocamedelianExaction
         {
             return CellFinder.TryFindRandomEdgeCellWith((IntVec3 c) => map.reachability.CanReachColony(c) && !GridsUtility.Fogged(c, map), map, CellFinder.EdgeRoadChance_Neutral, out cell);
         }
+
+        private static Pawn FindRandomMaleFromFaction(Faction faction)
+        {
+            return PawnsFinder.AllMapsWorldAndTemporary_Alive
+                .Where(p => p.Faction == faction && IsValidFather(p) && p.gender == Gender.Male)
+                .OrderBy(_ => Rand.Value)
+                .FirstOrDefault();
+        }
+
+        private static bool IsValidFather(Pawn pawn)
+        {
+            return pawn != null && pawn.RaceProps.Humanlike && !pawn.Dead && !pawn.Downed;
+        }
     }
 
     // Not returned
     public class CrE_PiratePawn_NoReturn : IncidentWorker
     {
         private static Pawn target;
+        private static Faction f;
 
-        public static void Initialize(Pawn pawn)
+        public static void Initialize(Pawn pawn, Faction faction)
         {
             target = pawn;
+            f = faction;
         }
         public static bool Do()
         {
@@ -126,6 +158,8 @@ namespace CrocamedelianExaction
                     colonist.needs.mood.thoughts.memories.TryGainMemory(thoughtDef);
                 }
             }
+
+            CrE_GameComponent.MakePawnSlave(target, f);
 
             IncidentDef CrE_PawnReturn = CrE_DefOf.CrE_PiratePawn_NoReturn;
             TaggedString taggedString = GrammarResolverSimpleStringExtensions.Formatted(CrE_PawnReturn.letterLabel, NamedArgumentUtility.Named(target, "PAWN")).AdjustedFor(target, "PAWN", true);

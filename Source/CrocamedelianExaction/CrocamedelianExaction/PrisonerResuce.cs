@@ -16,9 +16,29 @@ using Verse.Grammar;
 using UnityEngine.Diagnostics;
 using System.Collections;
 using Verse.Noise;
+using static CrocamedelianExaction.SitePartWorker_CrEPrisonerRescue;
 
 namespace CrocamedelianExaction
 {
+    public class IncidentWorker_CrEPawnRescueEvent : IncidentWorker
+    {
+        public float chance_modifier =>
+            (CrE_GameComponent.CrECapturePawns.Count >= CrE_GameComponent.Settings.CrE_PrisonerResuce_CaptureLimit
+                ? (CrE_GameComponent.Settings.CrE_PirateExtort_BaseChance + StorytellerUtilityPopulation.PopulationIntent) * 100
+                : CrE_GameComponent.Settings.CrE_PirateExtort_BaseChance + StorytellerUtilityPopulation.PopulationIntent);
+
+        protected override bool CanFireNowSub(IncidentParms parms)
+        {
+            return base.CanFireNowSub(parms) && CrE_GameComponent.Settings.CrE_PrisonerRescue && CrE_GameComponent.CrECapturePawns.Count >= 1;
+        }
+        protected override bool TryExecuteWorker(IncidentParms parms)
+        {
+            IncidentCrPrisonerRescue.Do();
+
+            return true;
+        }
+    }
+
     public class SitePartWorker_CrEPrisonerRescue : SitePartWorker_PrisonerWillingToJoin
     {
         public static Site site = null;
@@ -27,7 +47,7 @@ namespace CrocamedelianExaction
         {
             public static bool Do(bool GameEnd = false)
             {
-                if (!CrE_GameComponent.Settings.CrE_PrisonerRescue || CrE_GameComponent.GetRandomPrisoner() == null)
+                if (!CrE_GameComponent.Settings.CrE_PrisonerRescue || CrE_GameComponent.CrECapturePawns.Count == 0)
                     return false;
 
                 QuestScriptDef named = DefDatabase<QuestScriptDef>.GetNamed("CrE_PrisonerRescue", true);

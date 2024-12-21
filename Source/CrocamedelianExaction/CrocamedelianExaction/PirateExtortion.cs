@@ -25,6 +25,10 @@ namespace CrocamedelianExaction
 
         //   \left(e^{2\left(\frac{1}{1+e^{-0.02\cdot x}}-0.5\right)}-1\right)
 
+        /// <summary>
+        /// StorytellerUtilityPopulation.PopulationIntent is how much story teller wants to get you to 3 pawns. Negative means this event happens less when less pawns.
+        /// </summary>
+
         public override float BaseChanceThisGame => CrE_GameComponent.Settings.CrE_PirateExtort_BaseChance - StorytellerUtilityPopulation.PopulationIntent + (chance_modifier * CrE_GameComponent.Settings.CrE_pointsMod);
 
         //public override float BaseChanceThisGame => 9999999;
@@ -32,7 +36,7 @@ namespace CrocamedelianExaction
         protected override bool CanFireNowSub(IncidentParms parms)
         {
             return base.CanFireNowSub(parms)
-                && TryFindFaction(out faction)
+                && CrE_GameComponent.GetRandomPirateFaction(out faction)
                 && TryFindVictim(out victim)
                 && CrE_GameComponent.Settings.CrE_PirateExtort
                 && PawnsFinder.AllMaps_FreeColonists.Count() > 1;
@@ -40,7 +44,7 @@ namespace CrocamedelianExaction
 
         protected override bool TryExecuteWorker(IncidentParms parms)
         {
-            if (!TryFindFaction(out faction) || !TryFindVictim(out victim))
+            if (!CrE_GameComponent.GetRandomPirateFaction(out faction) || !TryFindVictim(out victim))
             {
                 return false;
             }
@@ -49,18 +53,18 @@ namespace CrocamedelianExaction
                 .Translate(victim.LabelShort, faction.Name)
                 .CapitalizeFirst();
 
-            var ChoiceLetter_CrE_Demand_Pawn =
-                (ChoiceLetter_CrE_Demand_Pawn)LetterMaker.MakeLetter(def.letterLabel, text, def.letterDef);
+            var ChoiceLetter_CrEDemandPawn =
+                (ChoiceLetter_CrEDemandPawn)LetterMaker.MakeLetter(def.letterLabel, text, def.letterDef);
 
-            ChoiceLetter_CrE_Demand_Pawn.title =
+            ChoiceLetter_CrEDemandPawn.title =
                 "CrE_PiratePawn_ExtortLabel".Translate().CapitalizeFirst();
 
-            ChoiceLetter_CrE_Demand_Pawn.radioMode = false;
-            ChoiceLetter_CrE_Demand_Pawn.faction = faction;
-            ChoiceLetter_CrE_Demand_Pawn.victim = victim;
-            ChoiceLetter_CrE_Demand_Pawn.StartTimeout(TimeoutTicks);
+            ChoiceLetter_CrEDemandPawn.radioMode = false;
+            ChoiceLetter_CrEDemandPawn.faction = faction;
+            ChoiceLetter_CrEDemandPawn.victim = victim;
+            ChoiceLetter_CrEDemandPawn.StartTimeout(TimeoutTicks);
 
-            Find.LetterStack.ReceiveLetter(ChoiceLetter_CrE_Demand_Pawn);
+            Find.LetterStack.ReceiveLetter(ChoiceLetter_CrEDemandPawn);
             return true;
         }
 
@@ -77,22 +81,10 @@ namespace CrocamedelianExaction
             return victim != null;
         }
 
-
-        private static bool TryFindFaction(out Faction faction)
-        {
-            return (from f in Find.FactionManager.AllFactions
-                    where f.HostileTo(Faction.OfPlayer)
-                          && !f.def.hidden
-                          && !f.defeated
-                          && f.def.humanlikeFaction
-                          && f.def.permanentEnemy
-                          && !SettlementUtility.IsPlayerAttackingAnySettlementOf(f)
-                    select f).TryRandomElement(out faction);
-        }
     }
 
 
-    public class ChoiceLetter_CrE_Demand_Pawn : ChoiceLetter
+    public class ChoiceLetter_CrEDemandPawn : ChoiceLetter
     {
         public Pawn victim;
         public Faction faction;
@@ -211,7 +203,6 @@ namespace CrocamedelianExaction
         {
             victim.SetFaction(null);
             int lostTime = PawnLostTime();
-
 
             CrE_GameComponent.PirateExtortPawn.Add(new PirateExtortPawnData(victim, lostTime, NextDate(), faction));
 

@@ -11,7 +11,7 @@
     <letterLabel>Pirate Demand</letterLabel>
     <letterDef>CrE_PiratePawn_Extort_Letter</letterDef>
     <baseChance>15</baseChance>
-    <earliestDay>0</earliestDay>
+    <earliestDay>15</earliestDay>
     <minRefireDays>15</minRefireDays>
   </IncidentDef>
 
@@ -54,28 +54,51 @@
 	<letterDef>NegativeEvent</letterDef>
   </IncidentDef>
 
-  <!-- <IncidentDef>
-    <defName>CrE_FactionRelationsDeterioration</defName>
+  <IncidentDef>
+    <defName>CrE_PrisonerRescue</defName>
+    <label>CrE Prisoner Rescue</label>
     <category>Misc</category>
-    <workerClass>CrocamedelianExaction.IncidentWorker_FactionRelationsDeterioration</workerClass>
-    <letterLabel>Relations Deterioration</letterLabel>
-    <letterDef>NegativeEvent</letterDef>
-    <letterText>Your relations with a nearby faction have worsened due to your recent activities.</letterText>
     <targetTags>
       <li>Map_PlayerHome</li>
     </targetTags>
+    <workerClass>CrocamedelianExaction.IncidentWorker_CrEPawnRescueEvent</workerClass>
+    <letterLabel>You Should Not Be Seeing This</letterLabel>
+    <letterText>You Should Not Be Seeing This</letterText>
+    <baseChance>1</baseChance>
+    <earliestDay>15</earliestDay>
+    <minRefireDays>45</minRefireDays>
   </IncidentDef>
 
   <IncidentDef>
-    <defName>CrE_FactionRelationsImprovement</defName>
+    <defName>CrE_PirateBecomeTribute</defName>
+    <label>CrE Become Tribute</label>
     <category>Misc</category>
-    <workerClass>CrocamedelianExaction.IncidentWorker_FactionRelationsImprovement</workerClass>
-    <letterLabel>Relations Improvement</letterLabel>
-    <letterDef>PositiveEvent</letterDef>
-    <letterText>Your recent assertiveness and bold actions have earned you respect.</letterText>
     <targetTags>
       <li>Map_PlayerHome</li>
     </targetTags>
-  </IncidentDef> -->
+    <workerClass>CrocamedelianExaction.IncidentWorker_CrEPirateBecomeTribute</workerClass>
+    <letterDef>CrE_PirateBecomeTribute_Letter</letterDef>
+    <letterLabel>You Should Not Be Seeing This</letterLabel>
+    <letterText>You Should Not Be Seeing This</letterText>
+    <baseChance>1</baseChance>
+    <earliestDay>0</earliestDay>
+    <minRefireDays>45</minRefireDays>
+  </IncidentDef>
+
+  <IncidentDef>
+    <defName>CrE_PirateGuestHost</defName>
+    <label>CrE Pirate Guest Host</label>
+    <category>Misc</category>
+    <targetTags>
+      <li>Map_PlayerHome</li>
+    </targetTags>
+    <workerClass>CrocamedelianExaction.IncidentWorker_CrEPirateGuestHost</workerClass>
+    <letterDef>CrE_PirateGuestHost_Letter</letterDef>
+    <letterLabel>You Should Not Be Seeing This</letterLabel>
+    <letterText>You Should Not Be Seeing This</letterText>
+    <baseChance>0</baseChance>
+    <earliestDay>0</earliestDay>
+    <minRefireDays>45</minRefireDays>
+  </IncidentDef>
 
 </Defs>

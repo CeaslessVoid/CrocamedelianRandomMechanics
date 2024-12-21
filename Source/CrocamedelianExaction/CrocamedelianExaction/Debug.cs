@@ -1,5 +1,8 @@
 ﻿using HarmonyLib;
 using LudeonTK;
+using RimWorld;
+using RimWorld.Planet;
+using RimWorld.QuestGen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +12,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using static CrocamedelianExaction.SitePartWorker_CrEPrisonerRescue;
+using static System.Collections.Specialized.BitVector32;
 
 namespace CrocamedelianExaction
 {
@@ -28,8 +32,15 @@ namespace CrocamedelianExaction
             PrintCrEPoints();
         }
 
+        [DebugAction(null, null, false, false, false, false, 0, false, category = "Crocamedelian Random Mechanics", name = "Force Recalculate Captured Pawns", requiresRoyalty = false, requiresIdeology = false, requiresBiotech = false, actionType = 0, allowedGameStates = LudeonTK.AllowedGameStates.Playing)]
+        private static void CalcCapturedPawns()
+        {
+            CrE_GameComponent.AddAllCapturedPawns();
+        }
+
+
         [DebugAction(null, null, false, false, false, false, 0, false, category = "Crocamedelian Random Mechanics", name = "Print Captured Pawns Available", requiresRoyalty = false, requiresIdeology = false, requiresBiotech = false, actionType = 0, allowedGameStates = LudeonTK.AllowedGameStates.Playing)]
-        private static void PrintPossiblePrisoners() // Prints current CrE points
+        private static void PrintPossiblePrisoners()
         {
             for (int i = 0; i < CrE_GameComponent.CrECapturePawns.Count; i++)
             {
@@ -38,7 +49,7 @@ namespace CrocamedelianExaction
         }
 
         [DebugAction(null, null, false, false, false, false, 0, false, category = "Crocamedelian Random Mechanics", name = "Print Extorted Pawn List", requiresRoyalty = false, requiresIdeology = false, requiresBiotech = false, actionType = 0, allowedGameStates = LudeonTK.AllowedGameStates.Playing)]
-        private static void PrintCurrentVictim() // Prints current CrE vicitim pawn
+        private static void PrintCurrentVictim()
         {
             for (int i = 0; i < CrE_GameComponent.PirateExtortPawn.Count; i++)
             {
@@ -50,8 +61,9 @@ namespace CrocamedelianExaction
         private static void DoPrisonerRescueEvent() // Prints current CrE points
         {
 
-            if (CrE_GameComponent.GetRandomPrisoner() != null)
+            if (CrE_GameComponent.CrECapturePawns.Count != 0)
             {
+                Util.Msg("Quest Started");
                 IncidentCrPrisonerRescue.Do();
             }
             else
@@ -61,6 +73,29 @@ namespace CrocamedelianExaction
             
         }
 
+        [DebugAction(null, null, false, false, false, false, 0, false, category = "Crocamedelian Random Mechanics", name = "Test", requiresRoyalty = false, requiresIdeology = false, requiresBiotech = false, actionType = 0, allowedGameStates = LudeonTK.AllowedGameStates.Playing)]
+        private static void Test()
+        {
+            CrE_GameComponent.GetRandomPirateFaction(out CrE_GameComponent.CrETributeFaction);
+            Pawn pawn;
+
+            if (!CrE_GameComponent.TryGetLeaderForTribute(out pawn) || pawn == null)
+            {
+                Util.Warn("No Faction Leader Found");
+                return;
+            }
+
+            Slate slate = new Slate();
+            slate.Set<Faction>("domFaction", CrE_GameComponent.CrETributeFaction, false);
+            slate.Set<Pawn>("randomPawn", pawn, false);
+
+            QuestScriptDef questDef = DefDatabase<QuestScriptDef>.GetNamed("CrEPirateTributeQuest");
+            Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(questDef, slate);
+
+            //quest.Accept(null);
+        }
+
         private const string CATEGORY = "Crocamedelian Random Mechanics";
+
     }
 }

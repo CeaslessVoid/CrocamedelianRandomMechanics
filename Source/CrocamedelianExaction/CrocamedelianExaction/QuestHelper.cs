@@ -707,6 +707,8 @@ namespace CrocamedelianExaction
                         Victim.health.AddHediff(newHediff);
                     }
 
+                    Victim.needs.mood.thoughts.memories.TryGainMemory(ThoughtDef.Named("BodyTattooByCapture"));
+
                     Hediff cooldown = HediffMaker.MakeHediff(HediffDef.Named("CrE_Hediff_LastOneISwear"), Victim);
                     Victim.health.AddHediff(cooldown);
 

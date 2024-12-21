@@ -2,11 +2,32 @@
 <Defs>
   <LetterDef ParentName="CustomChoiceLetterBase">
     <defName>CrE_PiratePawn_Extort_Letter</defName>
-    <letterClass>CrocamedelianExaction.ChoiceLetter_CrE_Demand_Pawn</letterClass>
+    <letterClass>CrocamedelianExaction.ChoiceLetter_CrEDemandPawn</letterClass>
     <color>(204, 155, 125)</color>
     <flashColor>(255, 155, 95)</flashColor>
     <flashInterval>16</flashInterval>
     <bounce>true</bounce>
     <arriveSound>LetterArrive_BadUrgent</arriveSound>
   </LetterDef>
+
+  <LetterDef ParentName="CustomChoiceLetterBase">
+    <defName>CrE_PirateBecomeTribute_Letter</defName>
+    <letterClass>CrocamedelianExaction.ChoiceLetter_CrEecomeTribute</letterClass>
+    <color>(204, 155, 125)</color>
+    <flashColor>(255, 155, 95)</flashColor>
+    <flashInterval>16</flashInterval>
+    <bounce>true</bounce>
+    <arriveSound>LetterArrive_BadUrgent</arriveSound>
+  </LetterDef>
+
+  <LetterDef ParentName="CustomChoiceLetterBase">
+    <defName>CrE_PirateGuestHost_Letter</defName>
+    <letterClass>CrocamedelianExaction.ChoiceLetter_CrGuestHost</letterClass>
+    <color>(204, 155, 125)</color>
+    <flashColor>(255, 155, 95)</flashColor>
+    <flashInterval>16</flashInterval>
+    <bounce>true</bounce>
+    <arriveSound>LetterArrive_BadUrgent</arriveSound>
+  </LetterDef>
+
 </Defs>

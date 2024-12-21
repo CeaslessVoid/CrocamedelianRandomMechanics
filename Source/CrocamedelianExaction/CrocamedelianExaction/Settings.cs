@@ -23,8 +23,8 @@ namespace CrocamedelianExaction
             base.ExposeData();
             Scribe_Values.Look<bool> (ref this.CrE_PirateExtort,          "CrE_PirateExtort", this.CrE_PirateExtort, true);
             //Scribe_Values.Look<bool> (ref this.CrE_PirateAffectRelations, "CrE_PirateAffectRelations", this.CrE_PirateAffectRelations, true);
-            Scribe_Values.Look<bool> (ref this.CrE_Male,                  "CrE_Male", this.CrE_Male, true);
-            Scribe_Values.Look<bool> (ref this.CrE_Female,                "CrE_Female", this.CrE_Female, true);
+            Scribe_Values.Look<bool> (ref this.CrE_Extort_Male,                  "CrE_Male", this.CrE_Extort_Male, true);
+            Scribe_Values.Look<bool> (ref this.CrE_Extort_Female,                "CrE_Female", this.CrE_Extort_Female, true);
 
             Scribe_Values.Look<float>(ref this.CrE_PirateExtort_BaseChance, "CrE_PirateExtort_BaseChance", 1f, true);
             Scribe_Values.Look<float>(ref this.CrE_PirateExtort_PointsMod, "CrE_PirateExtort_PointsMod", 1f, true);
@@ -34,8 +34,8 @@ namespace CrocamedelianExaction
 
             Scribe_Values.Look<float>(ref this.CrE_ExtortPawnPrice,       "CrE_ExtortPregChance", 0.3f, true);
 
-            Scribe_Values.Look<int>(ref this.CrE_minDaysBetweenEvents, "CrE_minDaysBetweenEvents", 10, true);
-            Scribe_Values.Look<int>(ref this.CrE_maxDaysBetweenEvents, "CrE_maxDaysBetweenEvents", 25, true);
+            Scribe_Values.Look<int>(ref this.CrE_minDaysBetweenEvents,    "CrE_minDaysBetweenEvents", 10, true);
+            Scribe_Values.Look<int>(ref this.CrE_maxDaysBetweenEvents,    "CrE_maxDaysBetweenEvents", 25, true);
             Scribe_Values.Look<float>(ref this.CrE_pointsMod,             "CrE_pointsMod", 0.2f, true);
 
             //Scribe_Values.Look<bool> (ref this.CrE_RapeTats,              "CrE_RapeTats", this.CrE_RapeTats, true);
@@ -51,8 +51,10 @@ namespace CrocamedelianExaction
             //Scribe_Values.Look<bool> (ref this.CrE_Respect_Active,        "CrE_Respect_Active", this.CrE_Respect_Active, true);
 
             Scribe_Values.Look<bool> (ref this.CrE_PrisonerRescue,        "CrE_PrisonerRescue", this.CrE_PrisonerRescue, true);
-            //Scribe_Values.Look<int>(ref this.CrE_minDaysBetweenRescue,    "CrE_minDaysBetweenRescue", 20, true);
-            //Scribe_Values.Look<int>(ref this.CrE_maxDaysBetweenRescue,    "CrE_maxDaysBetweenRescue", 50, true);
+            Scribe_Values.Look<float>(ref this.CrE_PrisonerRescue_baseChance, "CrE_PrisonerRescue_baseChance", 0.15f, true);
+            Scribe_Values.Look<bool>(ref this.CrE_PrisonerRescue_Male,       "CrE_PrisonerRescue_Male", this.CrE_PrisonerRescue_Male, true);
+            Scribe_Values.Look<bool>(ref this.CrE_PrisonerRescue_Female, "CrE_PrisonerRescue_Female", this.CrE_PrisonerRescue_Female, true);
+            Scribe_Values.Look<int>(ref this.CrE_PrisonerResuce_CaptureLimit, "CrE_PrisonerResuce_CaptureLimit", 3, true);
 
             //Scribe_Values.Look<bool>(ref this.CrE_forceRescue,            "CrE_froceRescue", this.CrE_forceRescue, false);
             //Scribe_Values.Look<int>(ref this.CrE_forceRescueDays,         "CrE_forceRescueDays", 5, true);
@@ -66,8 +68,8 @@ namespace CrocamedelianExaction
         public float    CrE_PirateExtort_PointsMod = 1;
 
         // Disable for male / female
-        public bool     CrE_Male =                  true;
-        public bool     CrE_Female =                true;
+        public bool     CrE_Extort_Male =                  true;
+        public bool     CrE_Extort_Female =                true;
 
         // Lose Pawn when extort
         public float    CrE_ExtortLossChance =      0.3f;
@@ -99,8 +101,10 @@ namespace CrocamedelianExaction
         // Prisoner Rescue Quest
         public bool     CrE_PrisonerRescue =       true;
 
-        //public int      CrE_minDaysBetweenRescue =  20;
-        //public int      CrE_maxDaysBetweenRescue =  50;
+        public float    CrE_PrisonerRescue_baseChance =  0.15f;
+        public bool     CrE_PrisonerRescue_Male = true;
+        public bool     CrE_PrisonerRescue_Female = true;
+        public int      CrE_PrisonerResuce_CaptureLimit =  3;
 
         // Force Rescue Quest
         //public bool     CrE_forceRescue =           true;
@@ -124,11 +128,11 @@ namespace CrocamedelianExaction
             float contentHeight = 500f;
 
             if (this._settings.CrE_PirateExtort)
-                contentHeight += 200f;
+                contentHeight += 350;
             if (this._settings.CrE_OpenTattoos)
                 contentHeight += (DefDatabase<TattooDef>.AllDefsListForReading.Count * 30f);
             if (this._settings.CrE_PrisonerRescue)
-                contentHeight += 200f;
+                contentHeight += 350;
 
             //float contentHeight = 300f + (DefDatabase<TattooDef>.AllDefsListForReading.Count * 30f);
             Rect viewRect = new Rect(0, 0, inRect.width - 20f, contentHeight);
@@ -147,6 +151,7 @@ namespace CrocamedelianExaction
             if (this._settings.CrE_PirateExtort)
             {
                 listing_Standard.Label("Do note that 10 is not 10%, but 10x more possible than event with 1. Chance is also modified by storyteller and population");
+                listing_Standard.Label("Also, incident only chance of happen after 15 days");
                 string baseChanceText = this._settings.CrE_PirateExtort_BaseChance.ToString();
                 listing_Standard.TextFieldNumericLabeled("Base chance of event", ref this._settings.CrE_PirateExtort_BaseChance, ref baseChanceText, 0.1f, 100f);
                 this._settings.CrE_PirateExtort_BaseChance = listing_Standard.Slider(this._settings.CrE_PirateExtort_BaseChance, 0.1f, 100f);
@@ -181,20 +186,24 @@ namespace CrocamedelianExaction
                 this._settings.CrE_ExtortLossChance = listing_Standard.Slider(this._settings.CrE_ExtortLossChance, 0f, 1f);
                 listing_Standard.Gap(8f);
 
+                listing_Standard.Label("Due to coding limitations, if faction leader is not male, and no world pawn of faction is male. No pregnancy will be added.");
+                listing_Standard.Label("This is also not full chance, but chance for impregnation to be called. Fetility still counts.");
                 string CrE_ExtortPregChance = this._settings.CrE_ExtortPregChance.ToString("F2");
                 listing_Standard.TextFieldNumericLabeled("Chance Pawn Gets Pregnant (x 100)", ref this._settings.CrE_ExtortPregChance, ref CrE_ExtortPregChance, 0f, 100f);
                 this._settings.CrE_ExtortPregChance = listing_Standard.Slider(this._settings.CrE_ExtortPregChance, 0f, 1f);
                 listing_Standard.Gap(8f);
 
+                
+                listing_Standard.Label("Might fix later");
                 string CrE_ExtortPawnPrice = this._settings.CrE_ExtortPawnPrice.ToString("F2");
                 listing_Standard.TextFieldNumericLabeled("Price Multiplier Of Pawn (For Bribe)", ref this._settings.CrE_ExtortPawnPrice, ref CrE_ExtortPawnPrice, 0f, 2f);
                 this._settings.CrE_ExtortPawnPrice = listing_Standard.Slider(this._settings.CrE_ExtortPawnPrice, 0f, 2f);
                 listing_Standard.Gap(8f);
 
-                listing_Standard.CheckboxLabeled("Allow Male", ref this._settings.CrE_Male);
+                listing_Standard.CheckboxLabeled("Allow Male", ref this._settings.CrE_Extort_Male);
                 listing_Standard.Gap(6f);
 
-                listing_Standard.CheckboxLabeled("Allow Female", ref this._settings.CrE_Female);
+                listing_Standard.CheckboxLabeled("Allow Female", ref this._settings.CrE_Extort_Female);
                 listing_Standard.Gap(6f);
 
                 if (this._settings.CrE_minDaysBetweenEvents >= this._settings.CrE_maxDaysBetweenEvents)
@@ -221,6 +230,28 @@ namespace CrocamedelianExaction
 
                 listing_Standard.Label("Do note that if the kidnapped pawns are used by anything else (e.g. for another event of given to the faction) they might not appear");
                 listing_Standard.Label("Making kidnapped pawns exclusive (so they can only be used by this event) had many issues. Sorry");
+                listing_Standard.Label("Vanilla Rimworld also has a quest like this, so make the chance a little higher if you want to see this more often");
+
+                listing_Standard.Label("Do note that 10 is not 10%, but 10x more possible than event with 1. Chance is also modified by storyteller and population");
+                string baseChanceText = this._settings.CrE_PrisonerRescue_baseChance.ToString();
+                listing_Standard.TextFieldNumericLabeled("Base chance of event", ref this._settings.CrE_PrisonerRescue_baseChance, ref baseChanceText, 0.1f, 100f);
+                this._settings.CrE_PrisonerRescue_baseChance = listing_Standard.Slider(this._settings.CrE_PrisonerRescue_baseChance, 0.1f, 100f);
+                listing_Standard.Gap(8f);
+
+                listing_Standard.Label("THIS CHANGE DOES NOT AFFECT ALREADY CAPTURED PAWNS. PLEASE CHANGE THIS BEFORE GAME.");
+
+                listing_Standard.CheckboxLabeled("Allow Male", ref this._settings.CrE_PrisonerRescue_Male);
+                listing_Standard.Gap(6f);
+
+                listing_Standard.CheckboxLabeled("Allow Female", ref this._settings.CrE_PrisonerRescue_Female);
+                listing_Standard.Gap(6f);
+
+                listing_Standard.Label("Once the amount of captured pawn hits this number, the chance of the quest is multiplied by 100");
+                listing_Standard.Label("Storyteller must still call for a quest / event for this to appear");
+                string maxPawns = this._settings.CrE_PrisonerResuce_CaptureLimit.ToString();
+                listing_Standard.TextFieldNumericLabeled("Maximum capture limit", ref this._settings.CrE_PrisonerResuce_CaptureLimit, ref maxPawns, 1, 100);
+                this._settings.CrE_PrisonerResuce_CaptureLimit = Mathf.RoundToInt(listing_Standard.Slider(this._settings.CrE_PrisonerResuce_CaptureLimit, 1, 100));
+                listing_Standard.Gap(8f);
 
                 //string minDaysRescueText = this._settings.CrE_minDaysBetweenRescue.ToString();
                 //listing_Standard.TextFieldNumericLabeled("Minimum Days Between Prisoner Rescue Quest", ref this._settings.CrE_minDaysBetweenRescue, ref minDaysRescueText, 0, 300);
@@ -251,38 +282,41 @@ namespace CrocamedelianExaction
                 //    }
                 //}
 
-                listing_Standard.CheckboxLabeled("Open Possible Tattoo", ref this._settings.CrE_OpenTattoos);
-                listing_Standard.Gap(6f);
+                
+            }
 
-                if (this._settings.CrE_OpenTattoos)
+            listing_Standard.Label("---------------------------------------------------------------------------------------------------------------------------------------------------------");
+            listing_Standard.CheckboxLabeled("Open Possible Tattoo (Shared between all events)", ref this._settings.CrE_OpenTattoos);
+            listing_Standard.Gap(6f);
+
+            if (this._settings.CrE_OpenTattoos)
+            {
+                listing_Standard.Label("Toggle tattoos:");
+
+                if (this._settings.EnabledTattoos == null)
                 {
-                    listing_Standard.Label("Toggle tattoos:");
+                    this._settings.EnabledTattoos = new Dictionary<string, bool>();
+                }
 
-                    if (this._settings.EnabledTattoos == null)
+                foreach (var tattoo in DefDatabase<TattooDef>.AllDefsListForReading)
+                {
+                    if (!this._settings.EnabledTattoos.ContainsKey(tattoo.defName))
                     {
-                        this._settings.EnabledTattoos = new Dictionary<string, bool>();
-                    }
+                        this._settings.EnabledTattoos[tattoo.defName] = true;
 
-                    foreach (var tattoo in DefDatabase<TattooDef>.AllDefsListForReading)
-                    {
-                        if (!this._settings.EnabledTattoos.ContainsKey(tattoo.defName))
+                        if (tattoo.defName == "NoTattoo_Face" || tattoo.defName == "NoTattoo_Body")
                         {
-                            this._settings.EnabledTattoos[tattoo.defName] = true;
-
-                            if (tattoo.defName == "NoTattoo_Face" || tattoo.defName == "NoTattoo_Body")
-                            {
-                                this._settings.EnabledTattoos[tattoo.defName] = false;
-                            }
+                            this._settings.EnabledTattoos[tattoo.defName] = false;
                         }
-
-                        bool isEnabled = this._settings.EnabledTattoos[tattoo.defName];
-                        listing_Standard.CheckboxLabeled(tattoo.label, ref isEnabled);
-
-                        this._settings.EnabledTattoos[tattoo.defName] = isEnabled;
-
                     }
+
+                    bool isEnabled = this._settings.EnabledTattoos[tattoo.defName];
+                    listing_Standard.CheckboxLabeled(tattoo.label, ref isEnabled);
+
+                    this._settings.EnabledTattoos[tattoo.defName] = isEnabled;
 
                 }
+
             }
 
             listing_Standard.End();

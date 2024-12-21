@@ -61,11 +61,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PirateBecomeTribute.cs" />
+    <Compile Include="PirateGuestHost.cs" />
     <Compile Include="PirateExtortPawnData.cs" />
     <Compile Include="PrisonerResuce.cs" />
-    <Compile Include="PawnAuction.cs" />
     <Compile Include="GameOverPatch.cs" />
     <Compile Include="QuestHelper.cs" />
+    <Compile Include="QuestNode_Root_CrEPirateTribute.cs" />
     <Compile Include="RaidPatch.cs" />
     <Compile Include="RapePatch.cs" />
     <Compile Include="DefOf.cs" />

@@ -37,7 +37,7 @@
     </questNameRules>
     <questDescriptionRules>
       <rulesStrings>
-        <li>questDescription->We have discovered to position of [prisoner_nameDef], who was a one of our colonist before being kidnapped. [prisoner_nameDef] is held prisoner by [siteFaction_name] at a camp near [map_definite][underArmedGuard].\n[prisoner_pronoun] pleads to be rescued, and wants to join your colony. [prisoner_pronoun] is a [prisoner_age]-year-old [prisoner_title]. [prisoner_pronoun] says that [allSitePartsDescriptionsExceptFirst][formerColonistInfo][prisonerFullRelationInfo]</li>
+        <li>questDescription->We have discovered to position of [prisoner_nameDef], who was a one of our colonist before being kidnapped. [prisoner_nameDef] is held prisoner by [siteFaction_name] at a camp near [map_definite][underArmedGuard].\n[prisoner_pronoun] pleads to be rescued, and wants to join your colony. [prisoner_pronoun] is a [prisoner_age]-year-old [prisoner_title]. [prisoner_pronoun] says that [allSitePartsDescriptionsExceptFirst][formerColonistInfo][prisonerFullRelationInfo]. Be quick, as [prisoner_nameDef]'s willpower is slowly being broken, and they will join their captor's side if it does.</li>
 
         <li>formerColonistInfo(priority=1)->\n\n[prisoner_formerlyColonistInfo]</li>
         <li>formerColonistInfo-></li>

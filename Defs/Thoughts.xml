@@ -30,7 +30,7 @@
 		</stages>
 	</ThoughtDef>
 
-  <ThoughtDef>
+  	<ThoughtDef>
 		<defName>PirateNoReturn</defName>
 		<thoughtClass>Thought_Memory</thoughtClass>
 		<durationDays>10.0</durationDays>
@@ -41,6 +41,21 @@
 				<label>Colonist missing</label>
 				<description>The pirates have taken of our colonist, and we were powerless to do anything.</description>
 				<baseMoodEffect>-5</baseMoodEffect>
+			</li>
+		</stages>
+	</ThoughtDef>
+
+	<ThoughtDef>
+		<defName>BodyTattooByCapture</defName>
+		<thoughtClass>Thought_Memory</thoughtClass>
+		<durationDays>100.0</durationDays>
+		<stackLimit>1</stackLimit>
+		<stackedEffectMultiplier>1</stackedEffectMultiplier>
+		<stages>
+			<li>
+				<label>Forced Tattoos</label>
+				<description>My body has been permanently marked by my captors. Everyone will know of humiliation when the see this.</description>
+				<baseMoodEffect>-15</baseMoodEffect>
 			</li>
 		</stages>
 	</ThoughtDef>

@@ -25,4 +25,10 @@
     <LetterLabelCrETattoo>Marked</LetterLabelCrETattoo>
     <LetterCrETattoo>{0} skin was forcefully marked by the {3}. This humiliating and degrading action will immortalize this moment on {2} skin, and hints at the future ownership of {4} as their resistance crumbles.</LetterCrETattoo>
     
+
+    <CrE_PirateBecomeTribute> test </CrE_PirateBecomeTribute>
+    <CrE_PirateBecomeTributeLabel> test </CrE_PirateBecomeTributeLabel>
+
+    <CrE_AcceptedPirateBecomeTribute> test </CrE_AcceptedPirateBecomeTribute>
+    <CrE_RejectedPirateBecomeTribute> test </CrE_RejectedPirateBecomeTribute>
 </LanguageData>

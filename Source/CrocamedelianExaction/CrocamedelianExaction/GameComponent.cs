@@ -13,6 +13,7 @@ using UnityEngine;
 using rjw;
 using static CrocamedelianExaction.SitePartWorker_CrEPrisonerRescue;
 using RimWorld.Planet;
+using RimWorld.QuestGen;
 
 namespace CrocamedelianExaction
 {
@@ -85,6 +86,18 @@ namespace CrocamedelianExaction
 
         }
 
+        public static bool GetRandomPirateFaction(out Faction faction)
+        {
+            return (from f in Find.FactionManager.AllFactions
+                    where f.HostileTo(Faction.OfPlayer)
+                          && !f.def.hidden
+                          && !f.defeated
+                          && f.def.humanlikeFaction
+                          && f.def.permanentEnemy
+                          && !SettlementUtility.IsPlayerAttackingAnySettlementOf(f)
+                    select f).TryRandomElement(out faction);
+        }
+
         public static Settlement GetRandomPirateSettlement()
         {
             var pirateSettlements = Find.WorldObjects.Settlements
@@ -121,17 +134,25 @@ namespace CrocamedelianExaction
             Find.GameEnder.CheckOrUpdateGameOver();
         }
 
-        public static void AddCapturedPawn(Pawn pawn)
+
+        public static void AddCapturedPawn(Pawn pawn, bool restric = true)
         {
             if (pawn != null && !CrECapturePawns.Contains(pawn) && pawn.ageTracker.AgeBiologicalYears >= 18)
             {
-                CrECapturePawns.Add(pawn);
+                if (!restric || ((pawn.gender == Gender.Male && Settings.CrE_PrisonerRescue_Male)||(pawn.gender == Gender.Female && Settings.CrE_PrisonerRescue_Female)))
+                    CrECapturePawns.Add(pawn);
             }
         }
 
          public static void AddAllCapturedPawns()
          {
-            CrECapturePawns.RemoveAll(pawn => pawn == null || pawn.Dead || pawn.Destroyed);
+            CrECapturePawns.RemoveAll(pawn =>
+                pawn == null ||
+                pawn.Dead ||
+                pawn.Destroyed ||
+                !Find.WorldPawns.AllPawnsAlive.Contains(pawn) ||
+                (pawn.Map != null && Find.Maps.Contains(pawn.Map))
+            );
 
             List<Pawn> kidnappedPawns = new List<Pawn>();
 
@@ -177,7 +198,7 @@ namespace CrocamedelianExaction
 
             if (Rand.Chance(CrE_GameComponent.Settings.CrE_ExtortLossChance))
             {
-                CrE_PiratePawn_NoReturn.Initialize(pawn);
+                CrE_PiratePawn_NoReturn.Initialize(pawn, faction);
                 CrE_PiratePawn_NoPawn.Do();
             }
             else
@@ -286,7 +307,11 @@ namespace CrocamedelianExaction
             if (CrECapturePawns.Count == 0)
                 return null;
 
-            return CrECapturePawns.RandomElement();
+            Pawn target = CrECapturePawns.RandomElement();
+
+            CrECapturePawns.Remove(target);
+
+            return target;
         }
 
         public static void RemovePawnWorld(Pawn pawn)
@@ -296,8 +321,8 @@ namespace CrocamedelianExaction
 
         public static bool isValidPawn(Pawn pawn)
         {
-            return (Settings.CrE_Male || pawn.gender != Gender.Male)
-                && (Settings.CrE_Female || pawn.gender != Gender.Female)
+            return (Settings.CrE_Extort_Male || pawn.gender != Gender.Male)
+                && (Settings.CrE_Extort_Female || pawn.gender != Gender.Female)
                 && pawn.ageTracker.AgeBiologicalYears >= 18;
         }
 
@@ -351,6 +376,39 @@ namespace CrocamedelianExaction
             }
         }
 
+        public static bool TryGetLeaderForTribute(out Pawn leader)
+        {
+            try
+            {
+                var playerIdeo = Faction.OfPlayer.ideos.PrimaryIdeo;
+
+                if (playerIdeo == null)
+                {
+                    leader = null;
+                    return false;
+                }
+
+                var homeMap = Find.CurrentMap;
+
+                if (homeMap == null)
+                {
+                    leader = null;
+                    return false;
+                }
+
+                var potentialVictims = homeMap.mapPawns.FreeColonists;
+
+                leader = potentialVictims.FirstOrDefault(p => p.Ideo == playerIdeo && p == p.Faction.leader);
+
+                return leader != null;
+            }
+            catch 
+            {
+                leader = null;
+                return false; 
+            }
+        }
+
 
         public override void ExposeData()
         {
@@ -358,15 +416,17 @@ namespace CrocamedelianExaction
 
             Scribe_Values.Look<int>(ref CrE_Points, "CrE_Points", 0, true);
 
+            Scribe_Values.Look<Faction>(ref CrETributeFaction, "CrETributeFaction", null, true);
+
             Scribe_Collections.Look(ref PirateExtortPawn, "PirateExtortPawn", LookMode.Deep);
 
             Scribe_Collections.Look(ref CrECapturePawns, "CrECapturePawns", LookMode.Reference);
 
         }
 
-        public static int CrE_Points; // CrE Points
+        public static int CrE_Points;
 
-        public static int CrELoseRelationsCooldown; // Cooldown for the lose relationship
+        public static int CrELoseRelationsCooldown;
 
         // Pawn, return time, 1 day over, faction captured
         public static List<PirateExtortPawnData> PirateExtortPawn = new List<PirateExtortPawnData>();
@@ -375,8 +435,7 @@ namespace CrocamedelianExaction
 
         public static List<Pawn> CrECapturePawns = new List<Pawn>();
 
-
+        public static Faction CrETributeFaction = null;
     }
-
 
 }
