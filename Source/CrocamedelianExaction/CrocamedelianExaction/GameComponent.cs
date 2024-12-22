@@ -416,7 +416,7 @@ namespace CrocamedelianExaction
 
             Scribe_Values.Look<int>(ref CrE_Points, "CrE_Points", 0, true);
 
-            Scribe_Values.Look<Faction>(ref CrETributeFaction, "CrETributeFaction", null, true);
+            Scribe_References.Look(ref CrETributeFaction, "CrETributeFaction");
 
             Scribe_Collections.Look(ref PirateExtortPawn, "PirateExtortPawn", LookMode.Deep);
 

@@ -24,6 +24,10 @@ namespace CrocamedelianExaction
         public static JobDef      CrE_FeedEnemy;
         public static JobDef      CrE_AdministerYayo;
         public static JobDef      CrE_ApplyTattoo;
+
+        [MayRequireRoyalty]
+        public static RitualOutcomeEffectDef TributeCeremony;
+
         static CrE_DefOf()
         {
             DefOfHelper.EnsureInitializedInCtor(typeof(CrE_DefOf));
