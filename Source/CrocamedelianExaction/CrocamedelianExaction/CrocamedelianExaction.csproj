@@ -65,6 +65,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MakeTributeJobs.cs" />
     <Compile Include="PirateBecomeTribute.cs" />
     <Compile Include="PirateGuestHost.cs" />
     <Compile Include="PirateExtortPawnData.cs" />
@@ -72,7 +73,7 @@
     <Compile Include="GameOverPatch.cs" />
     <Compile Include="QuestHelper.cs" />
     <Compile Include="QuestNode_Root_CrEPirateTribute.cs" />
-    <Compile Include="RaidPatch.cs" />
+    <Compile Include="OtherPatch.cs" />
     <Compile Include="RapePatch.cs" />
     <Compile Include="DefOf.cs" />
     <Compile Include="PawnReturn.cs" />

@@ -4,7 +4,7 @@
   <QuestScriptDef>
     <defName>CrEPirateTributeQuest</defName>
     <rootSelectionWeight>0</rootSelectionWeight>
-    <rootMinPoints>350</rootMinPoints>
+    <rootMinPoints>0</rootMinPoints>
     <questNameRules>
       <rulesStrings>
         <li>questName->Becoming a tributary</li>

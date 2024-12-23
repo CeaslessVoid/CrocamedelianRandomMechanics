@@ -376,6 +376,14 @@ namespace CrocamedelianExaction
             }
         }
 
+        public static void ResetTributeFaction()
+        {
+
+            CrETributeFaction = null;
+            CrETributeFactionPoints = 0;
+            CrETributeFactionTier = 0;
+
+        }
         public static bool TryGetLeaderForTribute(out Pawn leader)
         {
             try
@@ -416,6 +424,10 @@ namespace CrocamedelianExaction
 
             Scribe_Values.Look<int>(ref CrE_Points, "CrE_Points", 0, true);
 
+            Scribe_Values.Look<int>(ref CrETributeFactionPoints, "CrETributeFactionPoints", 0, true);
+
+            Scribe_Values.Look<int>(ref CrETributeFactionTier, "CrETributeFactionTier", 0, true);
+
             Scribe_References.Look(ref CrETributeFaction, "CrETributeFaction");
 
             Scribe_Collections.Look(ref PirateExtortPawn, "PirateExtortPawn", LookMode.Deep);
@@ -436,6 +448,10 @@ namespace CrocamedelianExaction
         public static List<Pawn> CrECapturePawns = new List<Pawn>();
 
         public static Faction CrETributeFaction = null;
+
+        public static int CrETributeFactionPoints = 0;
+
+        public static int CrETributeFactionTier = 0;
     }
 
 }

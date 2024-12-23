@@ -33,27 +33,21 @@
     <outcomeChances>
       <li>
         <label>Terrible</label>
-        <chance>0.05</chance>
-        <memory>TerribleBestowingCeremony</memory>
+        <chance>0.3</chance>
+        <memory>HumblingTributeCeremony</memory>
+        <positivityIndex>-3</positivityIndex>
+      </li>
+      <li>
+        <label>Embarrassing</label>
+        <chance>0.4</chance>
+        <memory>EmbarrassingTributeCeremony</memory>
         <positivityIndex>-2</positivityIndex>
       </li>
       <li>
-        <label>Unimpressive</label>
-        <chance>0.15</chance>
-        <memory>UnimpressiveBestowingCeremony</memory>
+        <label>Humiliating</label>
+        <chance>0.3</chance>
+        <memory>HumiliatingTributeCeremony</memory>
         <positivityIndex>-1</positivityIndex>
-      </li>
-      <li>
-        <label>Honorable</label>
-        <chance>0.6</chance>
-        <memory>HonorableBestowingCeremony</memory>
-        <positivityIndex>1</positivityIndex>
-      </li>
-      <li>
-        <label>Grandiose</label>
-        <chance>0.2</chance>
-        <memory>GrandioseBestowingCeremony</memory>
-        <positivityIndex>2</positivityIndex>
       </li>
     </outcomeChances>
   </RitualOutcomeEffectDef>

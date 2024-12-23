@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  
+  <!-- <DutyDef>
+    <defName>Get_Raped</defName>
+    <hook>HighPriority</hook>
+    <socialModeMax>Off</socialModeMax>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="JobGiver_WanderInGatheringArea">
+            <locomotionUrgency>Jog</locomotionUrgency>
+            <ticksBetweenWandersRange>50~250</ticksBetweenWandersRange>
+        </li>
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+
+  <DutyDef>
+    <defName>Make_Tribute</defName>
+    <hook>HighPriority</hook>
+    <socialModeMax>Off</socialModeMax>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="CrocamedelianExaction.JobGiver_AIMakeTribute" />
+        <li Class="JobGiver_Idle" />
+      </subNodes>
+    </thinkNode>
+  </DutyDef> -->
+
+</Defs>

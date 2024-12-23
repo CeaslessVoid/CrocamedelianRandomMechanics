@@ -723,7 +723,7 @@ namespace CrocamedelianExaction
             };
         }
 
-        private static void StripPrisoner(Pawn victim)
+        public static void StripPrisoner(Pawn victim)
         {
             while (victim.apparel.WornApparel.Any())
             {

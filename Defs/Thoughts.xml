@@ -60,4 +60,46 @@
 		</stages>
 	</ThoughtDef>
 
+	<ThoughtDef>
+    <defName>HumblingTributeCeremony</defName>
+    <thoughtClass>Thought_AttendedRitual</thoughtClass>
+    <durationDays>6</durationDays>
+    <stackLimit>3</stackLimit>
+    <stages>
+      <li>
+        <label>humbling display of submission</label>
+        <description>It is humbling to see our leader on their knees. We are no better than those pirates.</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>EmbarrassingTributeCeremony</defName>
+    <thoughtClass>Thought_AttendedRitual</thoughtClass>
+    <durationDays>6</durationDays>
+    <stackLimit>3</stackLimit>
+    <stages>
+      <li>
+        <label>embarrassing display of submission</label>
+        <description>It was embarrassing to see our leader serve those nasty pirates, we should be soo far above them.</description>
+        <baseMoodEffect>-5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>HumiliatingTributeCeremony</defName>
+    <thoughtClass>Thought_AttendedRitual</thoughtClass>
+    <durationDays>6</durationDays>
+    <stackLimit>3</stackLimit>
+    <stages>
+      <li>
+        <label>humiliating display of submission</label>
+        <description>We should be so far above those pirates, and yet we are on our knees serving them</description>
+        <baseMoodEffect>-10</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
 </Defs>

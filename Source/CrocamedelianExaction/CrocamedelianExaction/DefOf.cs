@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 using RimWorld;
+using Verse.AI;
 
 namespace CrocamedelianExaction
 {
@@ -24,9 +25,15 @@ namespace CrocamedelianExaction
         public static JobDef      CrE_FeedEnemy;
         public static JobDef      CrE_AdministerYayo;
         public static JobDef      CrE_ApplyTattoo;
+        //public static JobDef      CrE_ApplyTattooTribute;
 
-        [MayRequireRoyalty]
-        public static RitualOutcomeEffectDef TributeCeremony;
+        //public static ThingDef    ChastityCage;
+
+        //public static DutyDef     Get_Raped;
+        //public static DutyDef     Make_Tribute;
+
+        //[MayRequireRoyalty]
+        //public static RitualOutcomeEffectDef TributeCeremony;
 
         static CrE_DefOf()
         {

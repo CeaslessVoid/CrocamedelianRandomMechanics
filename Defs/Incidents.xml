@@ -69,7 +69,7 @@
     <minRefireDays>45</minRefireDays>
   </IncidentDef>
 
-  <IncidentDef>
+  <!-- <IncidentDef>
     <defName>CrE_PirateBecomeTribute</defName>
     <label>CrE Become Tribute</label>
     <category>Misc</category>
@@ -83,9 +83,9 @@
     <baseChance>1</baseChance>
     <earliestDay>0</earliestDay>
     <minRefireDays>45</minRefireDays>
-  </IncidentDef>
+  </IncidentDef> -->
 
-  <IncidentDef>
+  <!-- <IncidentDef>
     <defName>CrE_PirateGuestHost</defName>
     <label>CrE Pirate Guest Host</label>
     <category>Misc</category>
@@ -99,6 +99,6 @@
     <baseChance>0</baseChance>
     <earliestDay>0</earliestDay>
     <minRefireDays>45</minRefireDays>
-  </IncidentDef>
+  </IncidentDef> -->
 
 </Defs>
