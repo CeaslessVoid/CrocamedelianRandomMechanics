@@ -71,10 +71,10 @@
     <Compile Include="PirateExtortPawnData.cs" />
     <Compile Include="PrisonerResuce.cs" />
     <Compile Include="GameOverPatch.cs" />
+    <Compile Include="PrisonerRescueHelper.cs" />
     <Compile Include="QuestHelper.cs" />
     <Compile Include="QuestNode_Root_CrEPirateTribute.cs" />
     <Compile Include="OtherPatch.cs" />
-    <Compile Include="RapePatch.cs" />
     <Compile Include="DefOf.cs" />
     <Compile Include="PawnReturn.cs" />
     <Compile Include="PirateLoseRelations.cs" />

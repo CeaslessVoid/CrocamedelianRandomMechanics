@@ -76,34 +76,35 @@ namespace CrocamedelianExaction
         [DebugAction(null, null, false, false, false, false, 0, false, category = "Crocamedelian Random Mechanics", name = "Test", requiresRoyalty = false, requiresIdeology = false, requiresBiotech = false, actionType = 0, allowedGameStates = LudeonTK.AllowedGameStates.Playing)]
         private static void Test()
         {
-            Faction faction;
-            CrE_GameComponent.GetRandomPirateFaction(out faction);
-            Pawn pawn;
+            //Faction faction;
+            //CrE_GameComponent.GetRandomPirateFaction(out faction);
+            //Pawn pawn;
 
-            if (!CrE_GameComponent.TryGetLeaderForTribute(out pawn) || pawn == null)
-            {
-                Util.Warn("No Faction Leader Found");
-                return;
-            }
+            //if (!CrE_GameComponent.TryGetLeaderForTribute(out pawn) || pawn == null)
+            //{
+            //    Util.Warn("No Faction Leader Found");
+            //    return;
+            //}
 
             //faction.def.permanentEnemy = false;
             //Faction pFaction = Faction.OfPlayer;
             //pFaction.TryAffectGoodwillWith(faction, 200);
 
             //CrE_GameComponent.CrETributeFaction = faction;
-            faction = Faction.OfEmpire;
+            //faction = Faction.OfEmpire;
 
-            Slate slate = new Slate();
+            //Slate slate = new Slate();
             //slate.Set<Faction>("domFaction", CrE_GameComponent.CrETributeFaction, false);
             //slate.Set<Pawn>("randomPawn", pawn, false);
 
-            slate.Set<Pawn>("titleHolder", pawn, false);
-            slate.Set<Faction>("bestowingFaction", faction, false);
+            //slate.Set<Pawn>("titleHolder", pawn, false);
+            //slate.Set<Faction>("bestowingFaction", faction, false);
 
-            QuestScriptDef questDef = DefDatabase<QuestScriptDef>.GetNamed("CrEPirateTributeQuest");
-            Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(questDef, slate);
-
+            QuestScriptDef questDef = DefDatabase<QuestScriptDef>.GetNamed("CrE_TradeRequest");
+            //Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(questDef, slate);
+            Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(questDef, 0);
             quest.Accept(null);
+
         }
 
         private const string CATEGORY = "Crocamedelian Random Mechanics";
